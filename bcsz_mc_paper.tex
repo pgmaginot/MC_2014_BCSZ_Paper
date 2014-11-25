@@ -20,40 +20,59 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Insert authors' names and short version of title in lines below
 
-\authorHead{Authors' names, use et al. if more than 3}
-\shortTitle{Short version of title as entered by author on web page}
+\authorHead{Maginot, Ragusa, and Morel}
+\shortTitle{BCSZ}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
-\title{Title of the paper}
+\title{A Non-negative, Non-linear, Petrov-Galerkin Method for Bilinear Discontinuous differencing of the $S_N$ Equations}
 
-\author{Author A}
-\author{Author B\footnote{Footnote, if necessary}}
-\affil{Name of Institute \\
-  Corresponding Address \\
-  A@institute.gov; B@institute.gov}
-
-\author{Author C}
-\affil{
-  Department of Nuclear Engineering \\
-  Name of University \\
-  Address \\
-  C@name.univ.edu
-}
+\author{Peter G. Maginot}
+\author{Jean C. Ragusa\footnote{Corresponding author} }
+\author{Jim E. Morel}
+\affil{Department of Nuclear Engineering\\
+Texas A\&M University \\
+  3133 TAMU, College Station, TX 77843 \\
+ pmaginot@tamu.edu; jean.ragusa@tamu.edu; morel@tamu.edu}
 
 \maketitle
 
 \begin{abstract}
-A required 200-250 word abstract starts on this line.  Leave two blank lines before ``ABSTRACT'' and one after.  
-Use single (10 point) spacing.  
-The abstract is a very brief summary highlighting main accomplishments, what is new, and how it relates to the state-of-the-art.
+We have developed a new, non-negative, non-linear, Petrov-Galerkin discontinuous finite element method (NNPGDFEM), for use in conjunction with Galerkin bilinear discontinuous  
+(BLD) finite element differencing of the 2-D Cartesian geometry $S_N$ equations for quadrilaterals on an unstructured mesh.  
+This work is an extension of the idea that drove our previous development of a NNPGDFEM for use with linear discontinuous (LD) differencing of the 2-D Cartesian geometry $S_N$ equations for rectangular mesh cells.
+We present the theory and equations that describe the new method.  
+Additionally, we numerically compare the accuracy of our proposed method to the accuracy of the BLD scheme (without lumping) and the subcell corner balance method (equivalent to a ``fully'' lumped bilinear discontinuous scheme) for a test problem in which the BLD solution contains negative angular flux solutions
 
-\emph{Key Words}: List no more than five key words
+\emph{Key Words}: Radiation transport, DFEM, non-negative, bilinear, quadrilaterals
 \end{abstract}
+
+%% Final PDF file size should be no more than 4 MB.  Recommended paper length is 10-12 pages.  %%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
+
+%
+% - Negativities are a problem in DFEM radtran
+% - Need bilinear dfem for thick diffusion limit (cite Adams paper)
+% - Solution method like CSZ paper, not Don's paper
+%
+%
+
+Discontinuous finite element discretizations of the $S_N$ neutron transport equation can result in negative angular flux solutions.  
+These negative angular flux solutions are non-physical, but inherent to the mathematics that define the spatial differencing scheme.
+Several researchers have examined a the different methods (matrix lumping, fix-ups, and strictly non-negative solution representations) that inhibit or eliminate the negativities of the linear discontinuous (LD) finite element scheme on  a variety of spatial mesh cell types (slab, rectangular, triangular, \dots), for the $S_N$ neutron transport equation.
+However, Adams showed that  a bilinear discontinuous (BLD) scheme (mapped to a reference element) is required  to preserve the thick diffusion limit of the 2-D $S_N$ equations on quadrilaterals.
+The neutron transport analogs of radiative transfer spatial discretizations that preserve the equilibrium diffusion limit must preserve the thick diffusion limit.
+Thus, we are interested in finding accurate and robust BLD discretizations of the neutron transport equation as a first step towards more accurate radiative transfer simulations.
+
+To our knowledge, only matrix lumping has been considered  in an attempt to inhibit negative angular flux solutions of the (BLD) finite element spatial discretization.
+The more common forms of matrix lumping, mass matrix and mass matrix with surface matrix lumping, inhibit negative angular flux solutions, but do not guarantee a ``robust''  BLD angular flux solution.
+A spatial discretization is defined as being robust if the discretization yields strictly non-negative angular flux solutions, regardless of spatial mesh cell optical thickness and discrete ordinates direction.
+The fully lumped BLD (FLBLD) scheme, that is equivalent to the subcell balance method on rectangles, is the only BLD scheme that becomes robust with matrix lumping.
+Though robust, the FLBLD scheme has been shown to be less accurate than the unlumped BLD (UBLD) scheme for spatial mesh cells of thin and intermediate thicknesses.
+
 
 References can be typeset properly using the provided \textsc{Bib}\TeX style
 file. See examples of a journal~\cite{journal}, conference
@@ -61,7 +80,7 @@ proceedings~\cite{proceedings}, book~\cite{book}, and
 miscellaneous~\cite{misc}.
 
 References to websites are discouraged, but acceptable if absolutely necessary.  It is the author?s responsibility to check links in the pdf file.
-Final PDF file size should be no more than 4 MB.  Recommended paper length is 10-12 pages.
+
 
 \subsection{Second or Subsequent Major Heading}
 
