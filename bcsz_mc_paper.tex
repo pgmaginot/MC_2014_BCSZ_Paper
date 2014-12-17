@@ -12,7 +12,39 @@
 \usepackage[colorlinks,breaklinks]{hyperref}
 \hypersetup{linkcolor=black, citecolor=black, urlcolor=black}
 
+\allowdisplaybreaks
+
 \usepackage{lipsum}
+
+\newcommand{\fig}[1]{Fig.~\ref{#1}}                      % figure
+\newcommand{\figs}[2]{Figs.~\ref{#1}-\ref{#2}}     
+\newcommand{\tbl}[1]{Table~\ref{#1}}                     % table
+
+\newcommand{\benum}{\begin{equation}} 			% numbered equation
+\newcommand{\eenum}{\end{equation}}
+
+\newcommand{\beanum}{\begin{eqnarray}}  % numbered equation array
+\newcommand{\eeanum}{\end{eqnarray}}
+
+\newcommand{\eqt}[1]{Eq. (\ref{#1})}  % Reference to one equation
+\newcommand{\eqts}[1]{Eqs. (\ref{#1})}  % Reference to multiple equations 
+
+\newcommand{\B}[1]{\ensuremath{{B_{#1} }}}
+\newcommand{\J}{\ensuremath{\mathbf{J} }}
+\newcommand{\p}{\ensuremath{ \partial}}
+\newcommand{\M}{\ensuremath{ \mathbf M}}
+\newcommand{\Mw}{\ensuremath{\widehat{\mathbf M}}}
+
+\newcommand{\abs}[1]{\ensuremath{\left\lvert #1 \right\rvert}}
+\newcommand{\norm}[1]{\ensuremath{\left\lVert #1 \right\rVert}}
+
+\newcommand{\BCSZ}{\ensuremath{\widetilde{\psi}_{BCSZ}}}
+\newcommand{\BCSZH}{\ensuremath{\widehat{\psi}_{BCSZ}}}
+
+\newcommand{\omg}{\ensuremath{\vec{\Omega}}}
+
+\newcommand{\pec}{\, ,}
+\newcommand{\pep}{\, .}
 
 \def\equationautorefname{Eq.}
 \def\figureautorefname{Fig.}
@@ -60,86 +92,314 @@ Additionally, we numerically compare the accuracy of our proposed method to the 
 %
 %
 
-Discontinuous finite element discretizations of the $S_N$ neutron transport equation can result in negative angular flux solutions.  
-These negative angular flux solutions are non-physical, but inherent to the mathematics that define the spatial differencing scheme.
-Several researchers have examined a the different methods (matrix lumping, fix-ups, and strictly non-negative solution representations) that inhibit or eliminate the negativities of the linear discontinuous (LD) finite element scheme on  a variety of spatial mesh cell types (slab, rectangular, triangular, \dots), for the $S_N$ neutron transport equation.
-However, Adams showed that  a bilinear discontinuous (BLD) scheme (mapped to a reference element) is required  to preserve the thick diffusion limit of the 2-D $S_N$ equations on quadrilaterals.
-The neutron transport analogs of radiative transfer spatial discretizations that preserve the equilibrium diffusion limit must preserve the thick diffusion limit.
-Thus, we are interested in finding accurate and robust BLD discretizations of the neutron transport equation as a first step towards more accurate radiative transfer simulations.
+Discontinuous finite element method (DFEM) spatial discretizations of the $S_N$ neutron transport equation and $S_N$ thermal radiative transfer equations can result in negative angular flux and negative angular intensity solutions.  
+These negative solutions are non-physical, but inherent to the mathematics that define the radiation spatial differencing scheme.
+Several researchers have examined several different methods (matrix lumping\cite{adams_dfem}, fix-ups\cite{fichtl}, and strictly non-negative solution representations\cite{csz_me}) that inhibit or eliminate the negativities of the linear discontinuous (LD) finite element scheme on  a variety of spatial mesh cell types (slab, rectangular, triangular, \dots), for the $S_N$ neutron transport equation.
+However, Adams showed that LD does not maintain the neutronics thick diffusion limit on quadrilaterals \cite{adams_dfem}.
+We are interested in accurate methods for radiative transfer on quadrilaterals, therefore we seek methods that can maintain the radiative transfer equilibrium diffusion limit on quadrilaterals.
+If a radiative transfer spatial discretization is to maintain the equilibrium diffusion limit, its neutron transport analog must preserve the the thick diffusion limit.
+As a first step towards accurate methods for radiative transfer on quadrilaterals, we thus seek non-negative, bilinear discontinuous (BLD) finite element spatial discretizations of the neutron transport equation on quadrilaterals.
 
-To our knowledge, only matrix lumping has been considered  in an attempt to inhibit negative angular flux solutions of the (BLD) finite element spatial discretization.
-The more common forms of matrix lumping, mass matrix and mass matrix with surface matrix lumping, inhibit negative angular flux solutions, but do not guarantee a ``robust''  BLD angular flux solution.
-A spatial discretization is defined as being robust if the discretization yields strictly non-negative angular flux solutions, regardless of spatial mesh cell optical thickness and discrete ordinates direction.
-The fully lumped BLD (FLBLD) scheme, that is equivalent to the subcell balance method on rectangles, is the only BLD scheme that becomes robust with matrix lumping.
-Though robust, the FLBLD scheme has been shown to be less accurate than the unlumped BLD (UBLD) scheme for spatial mesh cells of thin and intermediate thicknesses.
+The Galerkin BLD spatial discretization for quadrilaterals, more commonly referred to as unlumped bilinear discontinuous (UBLD) yields negative angular flux solutions for spatial cells with glancing radiation incidence and/or large optical thickness \cite{adams_dfem}. 
+To our knowledge, only matrix lumping has been considered  in an attempt to inhibit negative angular flux solutions of BLD spatial discretizations.
+While more common forms of matrix lumping, such as mass matrix or combination mass and surface matrix lumping, inhibit negative angular flux solutions, they do not guarantee a strictly non-negative BLD angular flux solution \cite{adams_dfem}.
+Wareing, et. al, derived the fully lumped BLD (FLBLD) scheme \cite{flbld}, that uses additional manipulations of the UBLD equations to yield angular flux solutions that are strictly non-negative.
+Unfortunately, Adams demonstrated that FLBLD, which is equivalent to the subcell balance method on rectangles, is less accurate than the unlumped BLD (UBLD) scheme for spatial mesh cells of thin and intermediate thicknesses \cite{adams_scb}.
 
+In \cite{csz_me}, we developed a non-negative, non-linear Petrov-Galerkin DFEM for use in conjunction with LD spatial differencing of the $S_N$ equations in slab and rectangular Cartesian geometry.  
+In this paper, will extend the main idea of \cite{csz_me} to create a non-negative, non-linear Petrov-Galerkin DFEM to be used with UBLD spatial differencing on unstructured quadrilaterals.
+The remainder of this paper is divided as follows: a description and derivation of our new, bilinear consistent set-to-zero (BCSZ) Petrov-Galerkin scheme is given in Section \ref{sec:derivation},  computational results demonstrating the strictly positive nature of BCSZ and its improved accuracy relative to UBLD and FLBLD are given in Section \ref{sec:results}, and conclusions are given in Section \ref{sec:conclusions}.
 
-References can be typeset properly using the provided \textsc{Bib}\TeX style
-file. See examples of a journal~\cite{journal}, conference
-proceedings~\cite{proceedings}, book~\cite{book}, and
-miscellaneous~\cite{misc}.
-
-References to websites are discouraged, but acceptable if absolutely necessary.  It is the author?s responsibility to check links in the pdf file.
-
-
-\subsection{Second or Subsequent Major Heading}
-
-A logical division of your paper into sections makes it much easier to understand.    
-
-\subsection{Subsection Title: First Character of Each Non-trivial Word is Uppercase}
-
-Equations (Equation \ref{eqn:sample}) should be centered and sequentially numbered to the flush right of the formula.
-
-\begin{equation}
-  1+1=2
-  \label{eqn:sample}
-\end{equation}
-
-\noindent
-The continuation of a paragraph after an equation is not indented
-
-\subsubsection{Sub-subsection level and lower: only first character uppercase}
-
-Figures and tables should appear as closely as possible to where they are first cited, e.g. Fig. \ref{fig:sample}, in the text.  Figures are numbered in Arabic numerals, with the caption centered below the figure, in boldface. 
-
-\begin{figure}[H]
-  \centering
-  %\includegraphics[width=3in]{figure.png}
-  \caption{Sample Figure. Color is permitted, but must be readable if printed.}
-  \label{fig:sample}
+\section{Derivation}
+\label{sec:derivation}
+We begin by first considering the 2-D Cartesian discrete ordinates transport equation:
+\benum
+\omg_d \cdot \nabla \psi(x,y,\omg_d) + \sigma_t(x,y) \psi(x,y,\omg_d) = S_d(x,y) \pec
+\label{eq:exact_transport}
+\eenum
+where $\omg_d$ is the neutron direction, $\psi(x,y,\omg_d)$ is the angular flux $[n/(cm^s ~sec ~ ster)]$, $\sigma_t(x,y)$ is the total interaction cross section $[cm^{-1}]$, and $S_d(x,y)$ is the total source (scattering + fixed sources) in direction $\omg_d$.
+Following the standard Galerkin procedure and taking the moment of \eqt{eq:exact_transport} with respect to basis function $\B{i}(x,y)$  by first multiplying by $\B{i}(x,y)$  and then integrating over spatial cell $K$.   Assuming cell-wise constant $\sigma_t$, we have:
+\benum
+\label{eq:mom_ex}
+\int_{K}{\B{i}(x,y) \left[\omg_d \cdot \nabla \psi(x,y,\omg_d) + \sigma_t \psi(x,y,\omg_d) \right]~dx dy} = \int_R{ \B{i}(x,y)S(x,y)~dxdy} \pep
+\eenum 
+Using integration by parts \eqt{eq:mom_ex} becomes:
+\benum
+(\omg_d \cdot \vec{n})\oint_R{ \B{i}(x,y) \psi(x,y,\omg_d)~dS} - \int_{R}{\psi(x,y,\omg_d)\left[\omg\cdot\left(\nabla_{xy} \B{i}(x,y)\right)  \right]dxdy} + \sigma_t\int_R{ \B{i}(x,y) \psi(x,y,\omg_d)~dxdy} \pep
+\eenum
+We now define a reference element mapping in \fig{fig:ref_map}:
+\begin{figure}[t]
+\centering
+\includegraphics[width=4.5in]{mc_coord.pdf}
+\caption{Reference element mapping.}
+\label{fig:ref_map}
 \end{figure}
+that transforms from a reference point $(s,t)$, $s\in[-1,1]~t\in[-1,1]$, to a physical point $(x,y)$ such that:
+\beanum
+x &=& x_0 \B{0}(s,t) + x_1 \B{1}(s,t) + x_2 \B{2}(s,t) + x_3 \B{3}(s,t) \\
+y &=&  y_0 \B{0}(s,t) + y_1 \B{1}(s,t) + y_2 \B{2}(s,t) + y_3 \B{3}(s,t) \pep
+\eeanum
+Our basis function are the bilinear Lagrange interpolatory functions defined on the reference element:
+\begin{subequations}
+\beanum
+\B{0}(s,t) &=& \frac{1-s}{2}\frac{1-t}{2} \\
+\B{1}(s,t) &=& \frac{s+1}{2}\frac{1-t}{2} \\
+\B{2}(s,t) &=& \frac{s+1}{2}\frac{t+1}{2} \\
+\B{3}(s,t) &=& \frac{1-s}{2}\frac{t+1}{2}  \pep
+\eeanum
+\end{subequations}
+For every direction $\omg_d$, the four, exact, bilinear moment equations are:
+\begin{small}
+\begin{subequations}
+\label{eq:mom_eqs}
+\beanum
+(\omg \cdot \vec{n}_{\alpha})\psi_{1,\alpha} + 
+(\omg \cdot \vec{n}_{\beta})\psi_{1,\beta} + (\omg \cdot \vec{n}_{\delta})\psi_{1,\delta}+
+(\omg \cdot \vec{n}_{\gamma})\psi_{1,\gamma} - \mu \psi_{1,\mu} - \eta \psi_{1,\eta} + \sigma_t\psi_{1,M} &=& S_{1,M} \\
+%
+%
+(\omg \cdot \vec{n}_{\alpha})\psi_{2,\alpha} + 
+(\omg \cdot \vec{n}_{\beta})\psi_{2,\beta} + (\omg \cdot \vec{n}_{\delta})\psi_{2,\delta}+
+(\omg \cdot \vec{n}_{\gamma})\psi_{2,\gamma} - \mu \psi_{2,\mu} - \eta \psi_{2,\eta} + \sigma_t\psi_{2,M} &=& S_{2,M} \\
+%
+%
+(\omg \cdot \vec{n}_{\alpha})\psi_{3,\alpha} + 
+(\omg \cdot \vec{n}_{\beta})\psi_{3,\beta} + (\omg \cdot \vec{n}_{\delta})\psi_{3,\delta}+
+(\omg \cdot \vec{n}_{\gamma})\psi_{3,\gamma} - \mu \psi_{3,\mu} - \eta \psi_{3,\eta} + \sigma_t\psi_{3,M} &=& S_{3,M} \\
+%
+%
+(\omg \cdot \vec{n}_{\alpha})\psi_{4,\alpha} + 
+(\omg \cdot \vec{n}_{\beta})\psi_{4,\beta} + (\omg \cdot \vec{n}_{\delta})\psi_{4,\delta}+
+(\omg \cdot \vec{n}_{\gamma})\psi_{4,\gamma} - \mu \psi_{4,\mu} - \eta \psi_{4,\eta} + \sigma_t\psi_{4,M} &=& S_{4,M} \pec
+\eeanum
+\end{subequations}
+\end{small}
+where we have defined the following quantities as a function of basis function \B{i}:
+\begin{subequations}
+\label{eq:mom_defs}
+\beanum
+\psi_{i,\alpha} &=& \frac{\abs{J_{\alpha}}}{2}\int_{-1}^{1}{\B{i}(s,-1)\psi(s,-1)~ds}\\
+\psi_{i,\beta} &=& \frac{\abs{J_{\beta}}}{2}\int_{-1}^{1}{\B{i}(1,t)\psi(1,t)~dt}  \\
+\psi_{i,\delta} &=& \frac{\abs{J_{\delta}}}{2}\int_{-1}^{1}{\B{i}(s,1)\psi(s,1)~ds} \\
+\psi_{i,\gamma} &=& \frac{\abs{J_{\gamma}}}{2}\int_{-1}^{1}{\B{i}(-1,t)\psi(-1,t)~dt} \\
+\psi_{i,\mu} &=& \int_{-1}^1{\int_{-1}^1{\psi(s,t)\left(\frac{\p y}{\p t}\frac{\p \B{i}}{\p s} - \frac{\p y}{\p s}\frac{\p \B{i}}{\p t}  \right) dsdt}} \\
+\psi_{i,\eta} &=& \int_{-1}^1{\int_{-1}^1{ \psi(s,t) \left( \frac{\p x}{\p s}\frac{\p \B{i}}{\p t} - \frac{\p x}{\p t}\frac{\p \B{i}}{\p s} \right)dsdt}} \\
+\psi_{i,M} &=& \int_{-1}^1{\int_{-1}^1{ \B{i}(s,t) \psi \abs{\mathbf J}~dsdt}} \\
+S_{i,M} &=&  \int_{-1}^1{\int_{-1}^1{ \B{i}(s,t) S(s,t) \abs{\mathbf J}~dsdt}} \pep
+\eeanum
+\end{subequations}
+In \eqts{eq:mom_defs}, $\mathbf{J}$ is the Jacobian matrix of the transformation:
+\benum
+\mathbf{J} = \left[ \begin{array}{cc} 
+\frac{\p x}{\p s} & \frac{\p y}{\p s} \vspace{0.1in}\\
+\frac{\p x}{\p t} & \frac{\p y}{\p t}
+\end{array}\right] \pec
+\eenum
+$\abs{J_{\alpha,\beta,\delta,\gamma}}$ is the length of physical element side $\alpha,~\beta,~\delta,~\text{or }\gamma$, respectively, and $\omg_d = \langle \mu , \eta \rangle$.
+Additionally, we remind the reader that for a function, $h(x,y)$ the following hold true\cite{dfem_book}.
+\beanum
+\int_K{h(x,y) dx~dy} &=& \int_{-1}^1{\int_{-1}^1{ h(s,t) \abs{J(s,t) } ~ds~dt}} \\
+\mathbf{J} \left[ \begin{array}{c} \frac{\p f}{\p x} \\ \frac{\p f}{\p y} \end{array} \right] &=& \left[ \begin{array}{c} \frac{\p f}{\p s} \\ \frac{\p f}{\p t} \end{array} \right] \\
+\vec{\nabla}_{xy} h(x,y) &=& \mathbf{J}^{-1} \vec{\nabla}_{st} h(s,t) \pep
+\eeanum
+\eqts{eq:mom_eqs} has more unknowns than equations, requiring the assumption of a solution representation, $\widetilde{\psi}(s,t)$ that approximates the true angular flux solution $\psi(s,t)$.
 
-When importing figures or any graphical image please verify two things:\begin{enumerate}
-\item Any number, text or symbol is no smaller than 10-point after reduction to the actual window in your paper;\item That it can be translated into PDF.
-\end{enumerate}
+The UBLD scheme assumes a solution trial space equal to the weight/basis space,
+\benum
+\widetilde{\psi}_{UBLD} = \sum_{i=0}^3{\psi_{i,UBLD} \B{i}(s,t)  } \pep
+\eenum
+Under this assumption, \eqts{eq:mom_eqs} becomes a $4\times 4$ linear system of equations.  Interested readers are directed to \cite{adams_dfem} or one of the many other papers that have derived and used UBLD on rectangles and quadrilaterals for a more complete derivation.
 
-Tables, like Table \ref{tab:sample}, are numbered in Roman numerals, with the caption centered above the table, in \textbf{boldface}.  
-Double-space before and after the table.
+The FLBLD \cite{flbld,adams_dfem} alternatively derived as the subcell balance method on quadrilaterals \cite{adams_scb} begins with the UBLD equations then lumps (diagonalizes) the UBLD mass and surface matrices.  The FLBLD equations are then further manipulated to result in a strictly non-negative solution representation that is second order convergent in space, and is found by solving a $4\times 4$ linear system of equations.  Again, the interested reader is directed to \cite{flbld,adams_dfem,adams_scb} for a more detailed derivation.
 
-\begin{table}
-  \centering
-  \caption{Sample table: accuracy of nodal and characteristic methods}
-  \begin{tabular}{lcccc}
-    \toprule
-    Mesh & 8 x 8 & 16 x 16 & 32 x 32 & 64 x 64 \\
-    \midrule
-    Nodal & \num{1.000e-1} & \num{2.500e-2} & \num{6.250e-3} & \num{1.563e-3} \\
-    Characteristic & \num{1.000e-1} & \num{2.500e-2} & \num{6.250e-3} & \num{1.563e-3} \\
-    \bottomrule
-  \end{tabular}
-  \label{tab:sample}
-\end{table}
+The BCSZ scheme is defined as being a bilinear function, \BCSZH, 
+\benum
+\BCSZH(s,t) = \sum_{i=0}^3{\psi_{i,BCSZ} \B{i}(s,t)} \pec
+\eenum
+everywhere \BCSZH, is positive and zero otherwise:
+\benum
+\BCSZ(s,t) = \left \{ \begin{array}{ll}
+\BCSZH(s,t) & \BCSZH(s,t) > 0 \\
+0	& \text{otherwise}
+\end{array}
+\right. \pep
+\label{eq:bcsz}
+\eenum
+The initial iterate of \BCSZH is $\widetilde{\psi}_{UBLD}$.  If, and only if, $\widetilde{\psi}_{UBLD} \geq 0 $ everywhere within a cell, $\BCSZ = \widetilde{\psi}_{UBLD}$.
+Using the definition of \BCSZ given in \eqt{eq:bcsz} causes \eqts{eq:mom_eqs} to be a system of 4 non-linear equations with four fundamental unknowns, $\psi_{i,BCSZ}$ that describe the bilinear function \BCSZH.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{BCSZ Cell Integration}
+The definitions of $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ arising from using \BCSZ to close \eqts{eq:mom_eqs} require the integration of bivariate polynomials over regions bounded by a bilinear curve.
+That is to say that given the definition of \BCSZ in \eqt{eq:bcsz}, the integral contributions to $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ are non-trivial only over a portion of the cell where $\BCSZH(s,t) > 0$.  We denote the area where $\BCSZH>0$ as region $R$.
+An example layout for is given in \fig{fig:f_layout}.
+\begin{figure}[h]
+\centering
+% trim = {left, bottom right , 
+\includegraphics[width=3in,trim=0.5in  2.5in  1.in 2.5in,clip=true]{f_layout.pdf}
+\caption{$\BCSZ>0$ in green, $\BCSZ=0$ in white, for $\vec{\psi}_{BCSZ} = [3, -0.5, -1, -0.4]$ }
+\label{fig:f_layout}
+\end{figure}
+By definition along the dotted line, $\BCSZH=0$.  
+To evaluate $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ over $R$, we use a variable limit of integration in either $s$ or $t$.  
+To do this, we first transform \BCSZH from an interpolatory polynomial to a moment based polynomial, $f(s,t)$:
+\benum
+f(s,t) = f_c + s f_s + t f_t + st f_{st} \pec
+\label{eq:f_def}
+\eenum
+that we can find using the interpolatory definition of the basis functions:
+\benum
+\left[ 
+\begin{array}{cccc}
+1 &	 -1	& -1 &  1    \\
+1 &		1	& -1	&  -1		\\	
+1 &	  1	&  1		&  1		\\
+1 &		-1	& 1		&  -1		\\
+\end{array}
+\right]
+\left[
+\begin{array}{c}
+f_c \\
+f_s \\
+f_t \\
+f_{st} 
+\end{array}
+\right]
+=\vec{\psi}_{BCSZ}
+\pec
+\eenum
+with
+\benum
+\vec{\psi}_{BCSZ} = \left[ \psi_{0,BCSZ},
+\psi_{1,BCSZ},
+\psi_{2,BCSZ},
+\psi_{3,BCSZ} \right]^T
+\pep
+\eenum
+Along the dotted line in \fig{fig:f_layout}, $f(s,t)=0$, and \eqt{eq:f_def} can be manipulated to find either
+\begin{itemize}
+\item a limit of integration with respect to $s$, $\bar{l}_s$,  that is a function of $t$ , or 
+\item a limit of integration with respect to $t$, $\hat{l}_t$, that is a function of $s$:
+\end{itemize}
+\beanum
+\bar{l}_s &=&-\frac{f_c + f_t t}{f_s + f_{st} t} \\
+\hat{l}_t  &=& -\frac{f_c + f_s s}{f_t + f_{st} s} \pep
+\eeanum
+
+To minimize the amount of computational work that must be performed, we seek a single, generic integrand, for all $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ quantities.
+We find this generic integrand by first expanding the specific integrand definitions of $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$  over region $R$.  Starting with 
+the integrand of $\psi_{i,\mu}$
+\begin{subequations}
+\label{eq:m_expand}
+\begin{multline}
+\BCSZH(s,t) \left(\frac{\p y}{\p t}\frac{\p \B{i}}{\p s} - \frac{\p y}{\p s}\frac{\p \B{i}}{\p t}  \right) =  \left[   f_c + s f_s + t f_t + st f_{st} \right] \dots \\
+	\left(  \left[ y_{t,c} + s y_{t,s}\right] \left[ b_{i,s,c} + t b_{i,s,t} \right] - \left[ y_{s,c} + t y_{s,t}\right] \left[ b_{i,t,c} + s b_{i,t,s} \right]\right) \pec
+\end{multline}
+then $\psi_{i,\eta}$:
+\begin{multline}
+\BCSZH(s,t)  \left( \frac{\p x}{\p s}\frac{\p \B{i}}{\p t} - \frac{\p x}{\p t}\frac{\p \B{i}}{\p s} \right)  =  \left[   f_c + s f_s + t f_t + st f_{st} \right] \dots \\
+\left( \left[ x_{s,c} + t x_{s,t}\right] \left[ b_{i,t,c} + s b_{i,t,s} \right] -\left[ x_{t,c} + s x_{t,s}\right]\left[ b_{i,s,c} + t b_{i,s,t} \right] \right) \pec
+\end{multline}
+and finally $\psi_{i,M}$:
+\benum
+\B{i}(s,t) \BCSZH(s,t) \abs{J(s,t) } = \left[b_{i,c} + s b_{i,s} + t b_{i,t} + st b_{i,st} \right] \left[   f_c + s f_s + t f_t + st f_{st} \right] \left[ g_c + s g_s + t g_t \right] \pep
+\eenum
+\end{subequations}
+In \eqts{eq:m_expand} we have defined the following:
+\begin{subequations}
+\beanum
+\B{i}(s,t) &=& b_{i,c} + s b_{i,s} + t b_{i,t} + st b_{i,st} \\
+\frac{\p \B{i}}{\p s} &=& b_{i,s,c} + t b_{i,s,t}  \\
+\frac{ \p \B{i} }{\p t} &=&  b_{i,t,c} + s b_{i,t,s} \\
+\abs{\mathbf{J}(s,t) } &=& g_c + s g_s + t g_t \\
+\frac{\p x}{\p s} &=& x_{s,c} + t x_{s,t} \\
+\frac{\p x}{\p t} &=& x_{t,c} + s x_{t,s} \\
+\frac{\p y}{\p s} &=& y_{s,c} + t y_{s,t} \\
+\frac{\p y}{\p t} &=& y_{t,c} + s y_{t,s} \pep
+\eeanum
+\end{subequations}
+Using \verb+MATLAB+\cite{matlab},  each integrand in \eqts{eq:m_expand} is further expanded, then terms of equal degree bivariate polynomials,  $s^m t^n$,  with $0 \leq m \leq 3$, $0 \leq n \leq 3$, are collected.
+This allows us to calculate the twelve separate integrations of  $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$, as the multiplication of tweleve unique sets of constants, $\mathbf{C}_{i,\mu}$, $\mathbf{C}_{i,\eta}$, and $\mathbf{C}_{i,M}$, multiplied  by the integrations of a single set of bivariate polynomials over $R$.
+
+\subsubsection{Symbolic integration versus numerical integration}
+Initially, \verb+MATLAB+\cite{matlab} symbolic algebra generated expressions for the integrations of the generic bivariate polynomials over $R$ were used to evaluate $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$.  This worked well at low cell counts, but caused the \BCSZ non-linear iteration to fail at higher cell counts.
+To verify the \verb+MATLAB+ generated expressions, we compared the ``exact'' symbolic algebra generated results for calculating $\psi_{i,M}$ for $\vec{\psi}_{BCSZ} = [-2 ~0.1~200~10]^T$ to the value obtained using $N_s$ Gauss quadrature points in $s$ along the curved boundary.  
+A two-point Gauss quadrature in $t$ was used for each corresponding Gauss point in $s$ (tensor product quadrature).  An example of the quadrature layout is given in \fig{fig:quad} for $N_s = 4$.
+\begin{figure}[h]
+\centering
+\includegraphics[width=3in,trim=0.5in  2.5in  1.in 2.5in,clip=true]{quad_layout.pdf}
+\caption{Quadrature point locations for $N_s = 4$ for quadrature integration test.}
+\label{fig:quad}
+\end{figure}
+In \fig{fig:quad_err}, we plot $E_{i,quad}$, where:
+\benum
+E_{i} = \abs{ \psi_{i,sym} - \psi_{i,num} }{\abs{\psi_{i,sym} }} \pec
+\eenum
+$\psi_{i,sym}$ is the evaluation of $\psi_{i,M}$ using the symbolic algebra generated expressions, and $\psi_{i,num}$ is the quadrature evaluation of $\psi_{i,M}$ using $2N_s + 4$ quadrature points.
+\begin{figure}[h]
+\centering
+\includegraphics[width=3in,trim=0.5in  2.5in  1.in 2.5in,clip=true]{err_gauss_to_matlab_exact.pdf}
+\caption{$E_i$ for quadrature test.}
+\label{fig:quad_err}
+\end{figure}
+Compare the result of \fig{fig:quad_err} to \fig{fig:no_err}, which plots $\widehat{E}_i$:  
+\benum
+\widehat{E}_{i} = \abs{ \psi_{i,MAX} - \psi_{i,num} }{\abs{\psi_{i,MAX} }} \pec
+\eenum
+where $\psi_{i,MAX}$ is the quadrature approximation of $\psi_{i,M}$ using Gauss quadrature and $N_S = 40$.
+It is clear that the ``exact'' symbolic evaluated expressions suffer from numerical round-off caused by taking the difference of numbers that are of nearly the same magnitude.  
+As such, we now use Gauss-Kronrod\cite{gk_quad} quadrature to evaluate our bivariate polynomial integrations over $R$.  
+
+\subsection{BCSZ Edge Integration}
+
+\section{Numerical Results}
+\label{sec:results}
+
 \section{Conclusions}
+\label{sec:conclusions}
 
-Present your summary and conclusions here.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%\noindent
+%The continuation of a paragraph after an equation is not indented
+
+%\subsection{Subsection Title: First Character of Each Non-trivial Word is Uppercase}
+%\subsubsection{Sub-subsection level and lower: only first character uppercase}
+%
+%Figures and tables should appear as closely as possible to where they are first cited, e.g. %Fig. \ref{fig:sample}, in the text.  Figures are numbered in Arabic numerals, with the caption centered below the figure, in boldface. 
+%
+%\begin{figure}[H]
+  %\centering
+  %%\includegraphics[width=3in]{figure.png}
+  %\caption{Sample Figure. Color is permitted, but must be readable if printed.}
+  %\label{fig:sample}
+%\end{figure}
+%
+%When importing figures or any graphical image please verify two things:%\begin{enumerate}
+%\item Any number, text or symbol is no smaller than 10-point after reduction to the actual window in your paper;%\item That it can be translated into PDF.
+%\end{enumerate}
+%
+%Tables, like Table \ref{tab:sample}, are numbered in Roman numerals, with the caption centered above the table, in \textbf{boldface}.  
+%Double-space before and after the table.
+%
+%\begin{table}
+  %\centering
+  %\caption{Sample table: accuracy of nodal and characteristic methods}
+  %\begin{tabular}{lcccc}
+    %\toprule
+    %Mesh & 8 x 8 & 16 x 16 & 32 x 32 & 64 x 64 \\
+    %\midrule
+    %Nodal & \num{1.000e-1} & \num{2.500e-2} & \num{6.250e-3} & \num{1.563e-3} \\
+    %Characteristic & \num{1.000e-1} & \num{2.500e-2} & \num{6.250e-3} & \num{1.563e-3} \\
+    %\bottomrule
+  %\end{tabular}
+  %\label{tab:sample}
+%\end{table}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Acknowledgments}
 
-Acknowledge the help of colleagues and sources of funding, as appropriate, including Paul Romano and Tom Sutton, 
-who provided this template that is similar to a template from past M\&C meetings.
+Portions of this work were funded by the Department of Energy CSGF program, adminstered by the Krell Institute, under grant DE-FG02-97ER25308.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \setlength{\baselineskip}{12pt}
@@ -148,13 +408,13 @@ who provided this template that is similar to a template from past M\&C meetings
 \bibliography{references}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\appendix
-\section{}
-
-If necessary, include Appendices numbered in upper case alphabetical order.
-
-In order to ensure a uniform, professional look to the proceedings, please
-\emph{\textbf{do not modify}} the format of this template without checking with
-the organizers first.
+%\appendix
+%\section{}
+%
+%If necessary, include Appendices numbered in upper case alphabetical order.
+%
+%In order to ensure a uniform, professional look to the proceedings, please
+%\emph{\textbf{do not modify}} the format of this template without checking with
+%the organizers first.
 
 \end{document}
