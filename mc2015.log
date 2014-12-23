@@ -1,0 +1,136 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2014.11.29)  22 DEC 2014 17:42
+entering extended mode
+**mc2015.cls
+(C:\Users\Pete\Desktop\Work\MC_2014_BCSZ_Paper\mc2015.cls
+LaTeX2e <2014/05/01>
+Babel <3.9k> and hyphenation patterns for 68 languages loaded.
+
+LaTeX Warning: You have requested package `',
+               but the package provides `ansconf'.
+
+Package: ansconf 2014/09/25
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size12.clo"
+File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+Loading MC2015 document class: includes [12pt,twoside]{article}
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\cite\cite.sty
+LaTeX Info: Redefining \cite on input line 302.
+LaTeX Info: Redefining \nocite on input line 373.
+Package: cite 2010/09/10  v 5.3
+)
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\setspace\setspace.sty
+Package: setspace 2011/12/19 v6.7a set line spacing
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\tools\indentfirst.sty"
+Package: indentfirst 1995/11/23 v1.03 Indent first paragraph (DPC)
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\times.sty"
+Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
+) (C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\fancyhdr\fancyhdr.sty
+\fancy@headwidth=\skip43
+\f@ncyO@elh=\skip44
+\f@ncyO@erh=\skip45
+\f@ncyO@olh=\skip46
+\f@ncyO@orh=\skip47
+\f@ncyO@elf=\skip48
+\f@ncyO@erf=\skip49
+\f@ncyO@olf=\skip50
+\f@ncyO@orf=\skip51
+)
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\lastpage\lastpage.sty
+Package: lastpage 2013/01/28 v1.2l Refers to last page's name (HMM; JPG)
+)
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\titlesec\titlesec.sty
+Package: titlesec 2011/12/15 v2.10.0 Sectioning titles
+\ttl@box=\box26
+\beforetitleunit=\skip52
+\aftertitleunit=\skip53
+\ttl@plus=\dimen103
+\ttl@minus=\dimen104
+\ttl@toksa=\toks14
+\titlewidth=\dimen105
+\titlewidthlast=\dimen106
+\titlewidthfirst=\dimen107
+)
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\textcase\textcase.sty
+Package: textcase 2004/10/07 v0.07 Text only upper/lower case changing (DPC)
+)
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\caption.sty
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
+
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\caption3.sty
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
+Package: keyval 2014/05/08 v1.15 key=value parser (DPC)
+\KV@toks@=\toks15
+)
+\captionmargin=\dimen108
+\captionmargin@=\dimen109
+\captionwidth=\dimen110
+\caption@tempdima=\dimen111
+\caption@indent=\dimen112
+\caption@parindent=\dimen113
+\caption@hangindent=\dimen114
+)
+\c@ContinuedFloat=\count87
+)
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\titling\titling.sty
+Package: titling 2009/09/04 v2.1d maketitle typesetting
+\thanksmarkwidth=\skip54
+\thanksmargin=\skip55
+\droptitle=\skip56
+)
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\preprint\authblk.sty
+Package: authblk 2001/02/27 1.3 (PWD)
+\affilsep=\skip57
+\@affilsep=\skip58
+\c@Maxaffil=\count88
+\c@authors=\count89
+\c@affil=\count90
+)
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\abstract\abstract.sty
+Package: abstract 2009/06/08 v1.2a configurable abstracts
+\abstitleskip=\skip59
+\absleftindent=\skip60
+\absrightindent=\skip61
+\absparindent=\skip62
+\absparsep=\skip63
+)
+(C:\Users\Pete\AppData\Roaming\MiKTeX\2.9\tex\latex\tocbibind\tocbibind.sty
+Package: tocbibind 2010/10/13 v1.5k extra ToC listings
+Package tocbibind Info: The document has section divisions on input line 50.
+
+
+Package tocbibind Note: Using section or other style headings.
+
+))
+! Emergency stop.
+<*> mc2015.cls
+              
+*** (job aborted, no legal \end found)
+
+ 
+Here is how much of TeX's memory you used:
+ 2094 strings out of 493706
+ 32971 string characters out of 3144585
+ 91476 words of memory out of 3000000
+ 5449 multiletter control sequences out of 15000+200000
+ 3938 words of font info for 15 fonts, out of 3000000 for 9000
+ 1025 hyphenation exceptions out of 8191
+ 36i,0n,43p,190b,37s stack positions out of 5000i,500n,10000p,200000b,50000s
+!  ==> Fatal error occurred, no output PDF file produced!

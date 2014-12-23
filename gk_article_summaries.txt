@@ -1,0 +1,30 @@
+gk_history.pdf:
+not important.  Goes over the history of the first few articles on Gauss-Kronrod quadrature
+
+gk_1.pdf:
+Not useful.
+
+gk_2.pdf:
+not useful.  Ad-hoc method for integrating ELEN problems not using GK quadrature
+
+gk_3.pdf:
+not particularly useful.  No mention on how adaptivity is controlled.
+
+computer_journal.pdf
+not useful.  Not about GK quadrature
+
+gk_4.pdf:
+Calculation of GK points.  No error estimates.
+
+gk_5.pdf:
+Positivity and interlacing of weights.  Not error estimation.
+
+gk_6.pdf:
+Gives a reference for Gauss error bounds- 
+
+Ehrich  S. Error  bounds  for Gauss-Kronrod  quadrature  formulae.  Math. Comp.,  62:295-304, 1994.  Shows simple error estimate: (I_high - I_low)
+
+Patterson, T.N.L. 1968, Mathematics of Computation, vol. 22, pp. 847–856 and C1–C11; 1969, op. cit. , vol. 23, p. 892
+
+gk_7.pdf:
+Not useful.  How to compute absiccas and weights
