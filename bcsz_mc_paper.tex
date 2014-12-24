@@ -104,7 +104,7 @@ As a first step towards accurate methods for radiative transfer on quadrilateral
 The Galerkin BLD spatial discretization for quadrilaterals, more commonly referred to as unlumped bilinear discontinuous (UBLD) yields negative angular flux solutions for spatial cells with glancing radiation incidence and/or large optical thickness \cite{adams_dfem}. 
 To our knowledge, only matrix lumping has been considered  in an attempt to inhibit negative angular flux solutions of BLD spatial discretizations.
 While more common forms of matrix lumping, such as mass matrix or combination mass and surface matrix lumping, inhibit negative angular flux solutions, they do not guarantee a strictly non-negative BLD angular flux solution \cite{adams_dfem}.
-Wareing, et. al, derived the fully lumped BLD (FLBLD) scheme \cite{flbld}, that uses additional manipulations of the UBLD equations to yield angular flux solutions that are strictly non-negative.
+Wareing, et al., derived the fully lumped BLD (FLBLD) scheme \cite{flbld}, that uses additional manipulations of the UBLD equations to yield angular flux solutions that are strictly non-negative.
 Unfortunately, Adams demonstrated that FLBLD, which is equivalent to the subcell balance method on rectangles, is less accurate than the unlumped BLD (UBLD) scheme for spatial mesh cells of thin and intermediate thicknesses \cite{adams_scb}.
 
 In \cite{csz_me}, we developed a non-negative, non-linear Petrov-Galerkin DFEM for use in conjunction with LD spatial differencing of the $S_N$ equations in slab and rectangular Cartesian geometry.  
@@ -479,11 +479,82 @@ is approximated (exactly) using function evaluations at the mapped quadrature po
 
 \section{Numerical Results}
 \label{sec:results}
-Some text
+We now present computational results for a simple test problem, a $10~[cm] \times 10~[cm]$ void, $S_4$ level symmetric angular quadrature,
+with vacuum boundary condition on the left, top, and right sides, incident angular flux of $1~[n/(cm^2-sec-ster)]$ in the direction of $\mu=0.868890300722,~\eta = 0.350021174582$ along the bottom edge, vacuum conditions along the bottom edge for all other directions along the bottom face.
+In \fig{fig:negatives} we compare the results of the UBLD, FLBLD, and BCSZ schemes on an orthogonal mesh of $64\times 64$ cells, plotting the cell average scalar fluxes on a logarithmic scale.
+\begin{figure}[h]
+	\begin{center}
+		\begin{subfigure}{0.3\textwidth}
+			\includegraphics[width=2in]{cb_64.png}
+			\caption{FLBLD solution}
+			\label{fig:scb_64}		
+		\end{subfigure}
+		\begin{subfigure}{0.3\textwidth}
+			\includegraphics[width=2in]{bild_64.png}
+			\caption{UBLD solution}
+			\label{fig:bild_64}		
+		\end{subfigure}
+		\begin{subfigure}{0.3\textwidth}
+			\includegraphics[width=2in]{bcsz_64.png}
+			\caption{BCSZ solution}
+			\label{fig:bcsz_64}		
+		\end{subfigure}
+	\end{center}
+	\caption{$64\times 64$ mesh cell cell average scalar flux solutions}
+	\label{fig:negatives}
+\end{figure}
+The negativities and oscillations of the UBLD scheme are obvious.  The BCSZ and FLBLD solutions are both strictly non-negative.  
+However, the FLBLD scheme has a significant amount of numerical diffusion, whereas the BCSZ scheme maintains a sharp boundary at the discontinuity.
+
+In \fig{fig:unstructured} we show the BCSZ and UBLD cell average scalar flux solutions on a 25 cell $\times$ 25 cell mesh with each interior vertex perturbed to create an unstructured mesh.
+\begin{figure}[h]
+	\begin{center}
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=3in]{bcsz_unstruct.png}
+		\caption{BCSZ solution on unstructured grid.}
+		\label{fig:unstructured_bcsz}
+	\end{subfigure}	
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=3in]{bild_unstruct.png}
+		\caption{UBLD solution on unstructured grid.}		
+		\label{fig:unstructured_bild}
+	\end{subfigure}
+	\caption{Glancing void solutions with $25\times 25$ mesh cells.}
+	\label{fig:unstructured}
+	\end{center}	
+\end{figure}
+Figure \ref{fig:unstructured} shows the BCSZ scheme is capable of being used for unstructured mesh problems.
+Though the BCSZ solution exhibits some numerical diffusion in \fig{fig:unstructured}, it is a result of the mesh, as the UBLD scheme exhibits the same increase in numerical diffusion, while also demonstrating the negativities and oscillations of the UBLD solution.
+
+Finally, in \fig{fig:convergence}, we plot an $E_{\phi_A}$,
+\benum
+\label{eq:e_phi}
+E_{\phi_A} = \sqrt{ \sum_{c=1}^{N_cells}{ \Delta x_c \Delta y_c (\widetilde{\phi}_A - \phi_{A,exact} )^2} }
+\eenum
+an $L_2$ like norm of the average scalar flux in each cell for the UBLD, FLBLD, and BCSZ schemes on orthogonal meshes.  
+In \eqt{eq:e_phi}, $\widetilde{\phi}_A$ is the computed cell average scalar flux for a particular scheme in cell $c$, $\Delta x$ and $\Delta y$ are the respective cell widths of cell $c$, and $\phi_{A,exact}$ is the analytic cell average scalar flux in cell $c$.
+\begin{figure}[h]
+\centering
+\includegraphics[width=4in]{glance_convergence}
+\caption{Convergence of cell average scalar flux on orthogonal grids.}
+\label{fig:convergence}
+\end{figure}
+From \fig{fig:convergence}, we determine that BCSZ is more accurate than UBLD, while both UBLD and BCSZ are significantly more accurate than FLBD.
+Also, we verify that all methods reach the same asymptotic order of convergence, $h^{1/4}$.
+All of the methods considered converge the error in the cell average angular flux at this low rate due to the discontinuity in the analytic solution.
 
 \section{Conclusions}
 \label{sec:conclusions}
-Thoughts
+The BCSZ scheme produces strictly non-negative solutions that are at least as accurate as UBLD solutions.
+To date, the accuracy of the BCSZ scheme has only been measured against pure absorber/void test problems.  
+We are currently awaiting the completion of a modified interior penalty  diffusion synthetic acceleration (MIP DSA) implementation\cite{hackemack} in the TAMU developed $S_N$ solver, PDT\cite{pdt}, to apply the BCSZ to more interesting neutron transport and radiative transfer problems.
+We see numerous opportunities for future research going forward including:
+\begin{enumerate}
+\item comparing the efficiency of our current/near term solution methodology (fixed point iteration with MIP DSA) to the solution methodology proposed by Bruss, et al. \cite{csz_don} and
+\item generalizing BCSZ to higher order, $Q_N$ trial spaces through the extension of our adaptive quadrature integration scheme,
+\end{enumerate}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 %\noindent
