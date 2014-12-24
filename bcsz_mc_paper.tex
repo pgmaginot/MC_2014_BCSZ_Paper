@@ -76,7 +76,7 @@ We have developed a new, non-negative, non-linear, Petrov-Galerkin discontinuous
 (BLD) finite element differencing of the 2-D Cartesian geometry $S_N$ equations for quadrilaterals on an unstructured mesh.  
 This work is an extension of the idea that drove our previous development of a NNPGDFEM for use with linear discontinuous (LD) differencing of the 2-D Cartesian geometry $S_N$ equations for rectangular mesh cells.
 We present the theory and equations that describe the new method.  
-Additionally, we numerically compare the accuracy of our proposed method to the accuracy of the BLD scheme (without lumping) and the subcell corner balance method (equivalent to a ``fully'' lumped bilinear discontinuous scheme) for a test problem in which the BLD solution contains negative angular flux solutions
+Additionally, we numerically compare the accuracy of our proposed method to the accuracy of BLD without lumping and the subcell corner balance method (equivalent to a ``fully'' lumped BLD scheme) for a test problem that causes BLD scheme to generate negative angular flux solutions.
 
 \emph{Key Words}: Radiation transport, DFEM, non-negative, bilinear, quadrilaterals
 \end{abstract}
@@ -95,21 +95,21 @@ Additionally, we numerically compare the accuracy of our proposed method to the 
 
 Discontinuous finite element method (DFEM) spatial discretizations of the $S_N$ neutron transport equation and $S_N$ thermal radiative transfer equations can result in negative angular flux and negative angular intensity solutions.  
 These negative solutions are non-physical, but inherent to the mathematics that define the radiation spatial differencing scheme.
-Several researchers have examined several different methods (matrix lumping\cite{adams_dfem}, fix-ups\cite{fichtl}, and strictly non-negative solution representations\cite{csz_me}) that inhibit or eliminate the negativities of the linear discontinuous (LD) finite element scheme on  a variety of spatial mesh cell types (slab, rectangular, triangular, \dots), for the $S_N$ neutron transport equation.
+Several researchers have examined several different methods (matrix lumping\cite{adams_dfem}, fix-ups\cite{fichtl}, and strictly non-negative solution representations\cite{csz_me}) that inhibit or eliminate the negativities of the linear discontinuous (LD) finite element scheme on  a variety of spatial mesh cell types for the $S_N$ neutron transport equation.
 However, Adams showed that LD does not maintain the neutronics thick diffusion limit on quadrilaterals \cite{adams_dfem}.
-We are interested in accurate methods for radiative transfer on quadrilaterals, therefore we seek methods that can maintain the radiative transfer equilibrium diffusion limit on quadrilaterals.
+We are interested in accurate methods for radiative transfer, therefore we seek methods that can maintain the equilibrium diffusion limit on quadrilaterals.
 If a radiative transfer spatial discretization is to maintain the equilibrium diffusion limit, its neutron transport analog must preserve the the thick diffusion limit.
-As a first step towards accurate methods for radiative transfer on quadrilaterals, we thus seek non-negative, bilinear discontinuous (BLD) finite element spatial discretizations of the neutron transport equation on quadrilaterals.
+As a first step towards accurate methods for radiative transfer on quadrilaterals, we seek a new, non-negative, bilinear discontinuous (BLD) finite element spatial discretization of the neutron transport equation for quadrilaterals.
 
 The Galerkin BLD spatial discretization for quadrilaterals, more commonly referred to as unlumped bilinear discontinuous (UBLD) yields negative angular flux solutions for spatial cells with glancing radiation incidence and/or large optical thickness \cite{adams_dfem}. 
 To our knowledge, only matrix lumping has been considered  in an attempt to inhibit negative angular flux solutions of BLD spatial discretizations.
-While more common forms of matrix lumping, such as mass matrix or combination mass and surface matrix lumping, inhibit negative angular flux solutions, they do not guarantee a strictly non-negative BLD angular flux solution \cite{adams_dfem}.
-Wareing, et al., derived the fully lumped BLD (FLBLD) scheme \cite{flbld}, that uses additional manipulations of the UBLD equations to yield angular flux solutions that are strictly non-negative.
-Unfortunately, Adams demonstrated that FLBLD, which is equivalent to the subcell balance method on rectangles, is less accurate than the unlumped BLD (UBLD) scheme for spatial mesh cells of thin and intermediate thicknesses \cite{adams_scb}.
+While more common forms of matrix lumping, such as mass matrix or combination mass and surface matrix lumping, inhibit negative angular flux solutions, they do not guarantee a strictly non-negative BLD angular flux solution  for source-free pure absorber problems\cite{adams_dfem}.
+Wareing, et al., derived the fully lumped BLD (FLBLD) scheme \cite{flbld}, that uses additional manipulations of the UBLD equations to yield angular flux solutions that are strictly non-negative for source-free pure absorber problems.
+Unfortunately, Adams demonstrated that FLBLD, which is equivalent to the subcell balance method on rectangles, is less accurate than unlumped BLD (UBLD) scheme for spatial mesh cells of thin and intermediate thicknesses \cite{adams_scb}.
 
 In \cite{csz_me}, we developed a non-negative, non-linear Petrov-Galerkin DFEM for use in conjunction with LD spatial differencing of the $S_N$ equations in slab and rectangular Cartesian geometry.  
 In this paper, will extend the main idea of \cite{csz_me} to create a non-negative, non-linear Petrov-Galerkin DFEM to be used with UBLD spatial differencing on unstructured quadrilaterals.
-The remainder of this paper is divided as follows: a brief derivation common to all bilinear DFEM in Section \ref{sec:mom_eqs}, description and derivation of our new, bilinear consistent set-to-zero (BCSZ) Petrov-Galerkin scheme is given in Section \ref{sec:bcsz},  computational results demonstrating the strictly positive nature of BCSZ and its improved accuracy relative to UBLD and FLBLD are given in Section \ref{sec:results}, and conclusions are given in Section \ref{sec:conclusions}.
+The remainder of this paper is divided as follows: a brief derivation common to all bilinear DFEM is given in Section \ref{sec:mom_eqs}, description and derivation of our new, bilinear consistent set-to-zero (BCSZ) Petrov-Galerkin DFEM scheme is given in Section \ref{sec:bcsz},  computational results demonstrating the strictly positive nature of BCSZ and its improved accuracy relative to UBLD and FLBLD are given in Section \ref{sec:results}, and conclusions are given in Section \ref{sec:conclusions}.
 
 \section{Moment Equations}
 \label{sec:mom_eqs}
@@ -119,8 +119,8 @@ We begin by first considering the 2-D Cartesian discrete ordinates transport equ
 \label{eq:exact_transport}
 \eenum
 where $\omg_d$ is the neutron direction, $\psi(x,y,\omg_d)$ is the angular flux $[n/(cm^s ~sec ~ ster)]$, $\sigma_t(x,y)$ is the total interaction cross section $[cm^{-1}]$, and $S_d(x,y)$ is the total source (scattering + fixed sources) in direction $\omg_d$.
-Following the standard Galerkin procedure, we take the spatial moment of \eqt{eq:exact_transport} with respect to basis function $\B{i}(x,y)$  by first multiplying by basis function $\B{i}(x,y)$  and then integrating over the spatial cell $K$.
-Assuming cell-wise constant $\sigma_t$, the $i-\text{th}$ spatial moment equation is:
+Following the standard Galerkin procedure, we take the spatial moment of \eqt{eq:exact_transport} with respect to basis function $\B{i}(x,y)$  by first multiplying by basis function $\B{i}(x,y)$  and integrating over spatial cell $K$.
+Assuming cell-wise constant $\sigma_t$, the $i-\text{th}$ spatial moment is:
 \benum
 \label{eq:mom_ex}
 \int_{K}{\B{i}(x,y) \left[\omg_d \cdot \nabla \psi(x,y,\omg_d) + \sigma_t \psi(x,y,\omg_d) \right]~dx dy} = \int_R{ \B{i}(x,y)S(x,y)~dxdy} \pep
@@ -142,7 +142,7 @@ a reference point $(s,t)$, $s\in[-1,1]~t\in[-1,1]$, is transformed to a physical
 x &=& x_0 \B{0}(s,t) + x_1 \B{1}(s,t) + x_2 \B{2}(s,t) + x_3 \B{3}(s,t) \\
 y &=&  y_0 \B{0}(s,t) + y_1 \B{1}(s,t) + y_2 \B{2}(s,t) + y_3 \B{3}(s,t) \pep
 \eeanum
-In this work, we use mapped, bilinear Lagrange interpolatory functions as our basis functions:
+In this work, we use mapped, bilinear Lagrange interpolatory functions as basis functions:
 \begin{subequations}
 \label{eq:basis_func}
 \beanum
@@ -152,8 +152,8 @@ In this work, we use mapped, bilinear Lagrange interpolatory functions as our ba
 \B{3}(s,t) &=& \frac{1-s}{2}\frac{t+1}{2}  \pep
 \eeanum
 \end{subequations}
-As a result, following the Galerkin procedure creates four equations with many more unknowns than equations.
-To solve the exact moment equations, one must assume a solution representation, $\widetilde{\psi}(s,t,\omg_d)$, to approximate the true angular flux, $\psi(s,t,\omg_d)$.
+With this choice of basis functions, following the Galerkin procedure creates four equations with more unknowns than equations.
+To solve the moment equations, one must assume a solution representation, $\widetilde{\psi}(s,t,\omg_d)$, to approximate the true angular flux, $\psi(s,t,\omg_d)$.
 
 %For every direction $\omg_d$, the four, exact, bilinear moment equations are:
 %\begin{small}
@@ -218,9 +218,9 @@ The UBLD scheme assumes a solution trial space equal to the weight/basis space,
 Under this assumption, the spatial moments of the transport equation become a $4\times 4$ linear system of equations.  
 Interested readers are directed to \cite{adams_dfem} or one of the many other papers that have derived and used UBLD on rectangles and quadrilaterals for a more complete derivation.
 
-The FLBLD \cite{flbld,adams_dfem} alternatively derived as the subcell balance method on quadrilaterals \cite{adams_scb} begins with the UBLD equations then lumps (diagonalizes) the UBLD mass and surface matrices.  The FLBLD equations are then further manipulated to result in a strictly non-negative solution representation that is second order convergent in space, and is found by solving a $4\times 4$ linear system of equations.  Again, the interested reader is directed to \cite{flbld,adams_dfem,adams_scb} for a more detailed derivation.
+The FLBLD \cite{flbld,adams_dfem} alternatively derived as the subcell balance method on quadrilaterals \cite{adams_scb} begins with the UBLD equations then lumps (diagonalizes) the UBLD mass and surface matrices.  The FLBLD equations are then further manipulated to result in a scheme that is yields strictly non-negative solutions for source-free pure absorber solutions.  The FLBLD scheme is second order convergent in space, but can be less accurate than UBLD for cells of intermediate and thin optical thicknesses.  Interested readers are directed to \cite{flbld,adams_dfem,adams_scb} for a more detailed derivation.
 
-The BCSZ scheme is defined as being a bilinear function, \BCSZH, 
+The BCSZ scheme is defined as being a bilinear function, $\BCSZH(s,t)$, 
 \benum
 \BCSZH(s,t) = \sum_{i=0}^3{\psi_{i,BCSZ} \B{i}(s,t)} \pec
 \eenum
@@ -233,12 +233,12 @@ everywhere \BCSZH, is positive and zero otherwise:
 \right. \pep
 \label{eq:bcsz}
 \eenum
-The initial iterate of \BCSZH is $\widetilde{\psi}_{UBLD}$.  If, and only if, $\widetilde{\psi}_{UBLD} \geq 0 $ everywhere within a cell, $\BCSZ = \widetilde{\psi}_{UBLD}$.
-Using the definition of \BCSZ given in \eqt{eq:bcsz} turns the four spatial moments of the transport equation into four non-linear equations with four fundamental unknowns, $\psi_{i,BCSZ}$ that describe the bilinear function \BCSZH.
+The initial iterate of \BCSZH~ is $\widetilde{\psi}_{UBLD}$.  If, $\widetilde{\psi}_{UBLD} \geq 0 $ everywhere within a cell, $\BCSZ = \widetilde{\psi}_{UBLD}$.
+Using the definition of \BCSZ~ given in \eqt{eq:bcsz} turns the four spatial moments of the transport equation into four non-linear equations with four fundamental unknowns, $\psi_{i,BCSZ}$ that describe the bilinear function \BCSZH.
 
 \section{BCSZ Scheme}
 \label{sec:bcsz}
-For brevity, we have omitted completely deriving the four spatial moment equations.  Rather, we choose to focus on defining the important characteristics of the BCSZ scheme, namely how the BCSZ scheme defines the following moments equation quantities:
+For brevity, we omit a complete derivation of the four spatial moment equations.  Rather, we choose to focus on defining the important characteristics of the BCSZ scheme, namely how the BCSZ scheme defines the following moments equation terms:
 \begin{enumerate}
 \item edge leakage, $\psi_{i,edge}$,
 \item cell volume gradients, $\psi_{i\mu}$ and $\psi_{\eta}$, and
@@ -257,7 +257,7 @@ The $\psi_{i,edge}$ terms come from the moment equation integration by parts:
 + (\omg_d \cdot \vec{n}_{\beta})\frac{\abs{J_{\beta}}}{2}\psi_{i,\beta} 
  + (\omg_d \cdot \vec{n}_{\delta})\frac{\abs{J_{\delta}}}{2}\psi_{i,\delta} +(\omg_d \cdot \vec{n}_{\gamma}) \psi_{i,\gamma} \pec
 \end{multline}
-where $\abs{J}_z$ is the length of side $z$ and $\vec{n}_z$ is the outward directed unit normal of side $z$.
+where $\abs{J_z}$ is the length of side $z$ and $\vec{n}_z$ is the outward directed unit normal of side $z$.
 \end{subequations}
 The cell volume gradients,$\psi_{i,\mu}$ and $\psi_{i,\eta}$ come from:
 \begin{subequations}
@@ -278,7 +278,7 @@ The $\psi_{i,M}$ term comes from the reaction term:
 \benum
 \sigma_t\int_R{ \B{i}(x,y) \psi(x,y,\omg_d)~dxdy} = \sigma_t\int_{-1}^1{\int_{-1}^1{ \B{i}(s,t) \psi \abs{\mathbf J}~dsdt}} = \sigma_t \psi_{i,M} \pep
 \eenum
-In \eqt{eq:cell_grad},  all $\frac{\p}{\p s}$ terms are linear functions in $t$, all $\frac{\p}{\p t}$ terms are linear functions in $s$, $\mathbf{J}$ is the Jacobian matrix of the coordinate transformation:
+In \eqt{eq:cell_grad},  all $\frac{\p}{\p s}$ terms are linear functions in $t$, all $\frac{\p}{\p t}$ terms are linear functions in $s$, and $\mathbf{J}$ is the Jacobian matrix of the coordinate transformation:
 \benum
 \mathbf{J} = \left[ \begin{array}{cc} 
 \frac{\p x}{\p s} & \frac{\p y}{\p s} \vspace{0.1in}\\
@@ -286,8 +286,25 @@ In \eqt{eq:cell_grad},  all $\frac{\p}{\p s}$ terms are linear functions in $t$,
 \end{array}\right] \pep
 \eenum
 
+\subsection{BCSZ Edge Integration}
+Along any edge, there are four possible cases.  Assuming that we are looking at edge $\alpha$, but with easy translation to any other edge:
+\begin{enumerate}
+\item $\BCSZH > 0$ along whole edge,
+\item  $\BCSZH < 0$ along whole edge,
+\item $\psi_{0,BCSZ} < 0$, $\psi_{1,BCSZ} > 0$, and
+\item $\psi_{0,BCSZ} > 0$, $\psi_{1,BCSZ} <0$.
+\end{enumerate}
+Case one is straightforward and identical to the integration used by the UBLD scheme. 
+Case two is by definition, zero along the integral.
+Cases three and four are handled by first determining $s_z$, where $\BCSZH(s_z,-1) = 0$:
+\benum
+s_z = \frac{\psi_{0,BCSZ}+\psi_{1,BCSZ}}{\psi_{0,BCSZ} - \psi_{1,BCSZ} }
+\eenum
+Then a two point Gauss quadrature is mapped to the interval $[s_z,1]$ for case 3 and $[-1,s_z]$ for case 4, and the integral of $\psi_{i,\alpha}$
+is approximated (exactly) using function evaluations at the mapped quadrature points.
+
 \subsection{BCSZ Cell Integration}
-Given the definition of \BCSZ in \eqt{eq:bcsz}, the integral contributions to $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ are non-trivial only over a portion of the cell where $\BCSZH(s,t) > 0$.
+Given the definition of \BCSZ~ in \eqt{eq:bcsz}, the integral contributions to $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ are non-trivial only over a portion of the cell where $\BCSZH(s,t) > 0$.
 There are seven possible geometric integration cases to be considered for all values of \BCSZH.  Six are shown in \fig{fig:bcsz_cases}.
 \begin{figure}[h]
 \begin{center}
@@ -337,16 +354,17 @@ There are seven possible geometric integration cases to be considered for all va
 	\label{fig:bcsz_cases}
 	\end{center}
 \end{figure}
-The other case is when $\BCSZH > 0$ everywhere in the cell, in which case the integration of $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ is straight forward, and identical to that required by the defintion of the UBLD scheme.
+The other case is when $\BCSZH > 0$ everywhere in the cell, in which case the integration of $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ is straight forward, and identical to that required by the definition of the UBLD scheme.
 Though other cases are possible, all can be transformed into one of the cases in \fig{fig:bcsz_cases} via rotation.
-By definition,  along each sold line in \fig{fig:bcsz_cases}, $\BCSZH=0$.  
-To evaluate $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ over some region, $R$, in \fig{fig:bcsz_cases} where $\BCSZH>0$ and one edge is bounded by a curve, we use a variable limit of integration in $t$.  
-To do this, we first transform \BCSZH from an interpolatory polynomial to a moment based polynomial, $f(s,t)$:
+$\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ are evaluated by summing the integral contribution in  each region of a particular case given in \fig{fig:bcsz_cases}
+To evaluate $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$ contributions in a region, $R$, bounded by a curved boundary, we make use of variable limits of integration.
+Along the curved boundary of $R$, $\BCSZH=0$, this allows us to determine $t$ as a function of $s$ (or $s$ as a function of $t$).  
+To find a variable limit of integration with respect to $t$ as a function of $s$, we first transform \BCSZH~ from an interpolatory polynomial to a moment based polynomial, $f(s,t)$:
 \benum
 f(s,t) = f_c + s f_s + t f_t + st f_{st} \pep
 \label{eq:f_def}
 \eenum
-We find the coefficients of this formula using the interpolatory definition of the basis functions:
+The coefficients of $f$ are found formula using the interpolatory definition of the basis functions:
 \benum
 \left[ 
 \begin{array}{cccc}
@@ -375,55 +393,55 @@ with
 \psi_{3,BCSZ} \right]^T
 \pep
 \eenum
-Since $f(s,t)=0$ along each solid line in \fig{fig:bcsz_cases}, \eqt{eq:f_def} can be manipulated to find a variable limit of integration with respect to $t$, $\hat{l}_t$, that is a function of $s$:
+\eqt{eq:f_def} is then manipulated to find a variable limit of integration with respect to $t$, $\hat{l}_t$, that is a function of $s$:
 \benum
 \hat{l}_t  = -\frac{f_c + f_s s}{f_t + f_{st} s} \pep
 \eenum
 
-Rather than evaluate each $\psi_{i,\mu}$, $\psi_{i,\eta}$, and $\psi_{i,M}$ integral, we seek a single, generic integrand that is only a function of $s$ and $t$.
-We find this generic integrand by first expanding the specific \BCSZ integrand definitions of $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$  over  $R$.  
-Starting with the integrand of $\psi_{i,\mu}$,
-\begin{subequations}
-\label{eq:m_expand}
-\begin{multline}
-\BCSZH(s,t) \left(\frac{\p y}{\p t}\frac{\p \B{i}}{\p s} - \frac{\p y}{\p s}\frac{\p \B{i}}{\p t}  \right) =  \left[   f_c + s f_s + t f_t + st f_{st} \right] \dots \\
-	\left(  \left[ y_{t,c} + s y_{t,s}\right] \left[ b_{i,s,c} + t b_{i,s,t} \right] - \left[ y_{s,c} + t y_{s,t}\right] \left[ b_{i,t,c} + s b_{i,t,s} \right]\right) \pec
-\end{multline}
-then the $\psi_{i,\eta}$ integrand:
-\begin{multline}
-\BCSZH(s,t)  \left( \frac{\p x}{\p s}\frac{\p \B{i}}{\p t} - \frac{\p x}{\p t}\frac{\p \B{i}}{\p s} \right)  =  \left[   f_c + s f_s + t f_t + st f_{st} \right] \dots \\
-\left( \left[ x_{s,c} + t x_{s,t}\right] \left[ b_{i,t,c} + s b_{i,t,s} \right] -\left[ x_{t,c} + s x_{t,s}\right]\left[ b_{i,s,c} + t b_{i,s,t} \right] \right) \pec
-\end{multline}
-and finally the $\psi_{i,M}$ integrand:
-\benum
-\B{i}(s,t) \BCSZH(s,t) \abs{J(s,t) } = \left[b_{i,c} + s b_{i,s} + t b_{i,t} + st b_{i,st} \right] \left[   f_c + s f_s + t f_t + st f_{st} \right] \left[ g_c + s g_s + t g_t \right] \pep
-\eenum
-\end{subequations}
-In \eqts{eq:m_expand} we have defined the following:
-\begin{subequations}
-\beanum
-\B{i}(s,t) &=& b_{i,c} + s b_{i,s} + t b_{i,t} + st b_{i,st} \\
-\frac{\p \B{i}}{\p s} &=& b_{i,s,c} + t b_{i,s,t}  \\
-\frac{ \p \B{i} }{\p t} &=&  b_{i,t,c} + s b_{i,t,s} \\
-\abs{\mathbf{J}(s,t) } &=& g_c + s g_s + t g_t \\
-\frac{\p x}{\p s} &=& x_{s,c} + t x_{s,t} \\
-\frac{\p x}{\p t} &=& x_{t,c} + s x_{t,s} \\
-\frac{\p y}{\p s} &=& y_{s,c} + t y_{s,t} \\
-\frac{\p y}{\p t} &=& y_{t,c} + s y_{t,s} \pep
-\eeanum
-\end{subequations}
-Using \verb+MATLAB+\cite{matlab},  each integrand in \eqts{eq:m_expand} is further expanded, then terms of equal degree bivariate polynomials,  $s^m t^n$,  with $0 \leq m \leq 3$, $0 \leq n \leq 3$, are collected.
-This allows us to calculate the twelve separate integrations of  $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$, as the multiplication of twelve unique sets of constants, $\mathbf{C}_{i,\mu}$, $\mathbf{C}_{i,\eta}$, and $\mathbf{C}_{i,M}$, multiplied  by the integrations of a single set of bivariate polynomials, over $R$.
+Rather than evaluate each $\psi_{i,\mu}$, $\psi_{i,\eta}$, and $\psi_{i,M}$ integral, we evaluate a single, generic, bivariate polynomial integrand that is only a function of $s$ and $t$.
+%We find this generic integrand by first expanding the specific \BCSZ~ integrand definitions of $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$  over  $R$.  
+%Starting with the integrand of $\psi_{i,\mu}$,
+%\begin{subequations}
+%\label{eq:m_expand}
+%\begin{multline}
+%\BCSZH(s,t) \left(\frac{\p y}{\p t}\frac{\p \B{i}}{\p s} - \frac{\p y}{\p s}\frac{\p \B{i}}{\p t}  \right) =  \left[   f_c + s f_s + t f_t + st f_{st} \right] \dots \\
+	%\left(  \left[ y_{t,c} + s y_{t,s}\right] \left[ b_{i,s,c} + t b_{i,s,t} \right] - \left[ y_{s,c} + t y_{s,t}\right] \left[ b_{i,t,c} + s b_{i,t,s} \right]\right) \pec
+%\end{multline}
+%then the $\psi_{i,\eta}$ integrand:
+%\begin{multline}
+%\BCSZH(s,t)  \left( \frac{\p x}{\p s}\frac{\p \B{i}}{\p t} - \frac{\p x}{\p t}\frac{\p \B{i}}{\p s} \right)  =  \left[   f_c + s f_s + t f_t + st f_{st} \right] \dots \\
+%\left( \left[ x_{s,c} + t x_{s,t}\right] \left[ b_{i,t,c} + s b_{i,t,s} \right] -\left[ x_{t,c} + s x_{t,s}\right]\left[ b_{i,s,c} + t b_{i,s,t} \right] \right) \pec
+%\end{multline}
+%and finally the $\psi_{i,M}$ integrand:
+%\benum
+%\B{i}(s,t) \BCSZH(s,t) \abs{J(s,t) } = \left[b_{i,c} + s b_{i,s} + t b_{i,t} + st b_{i,st} \right] \left[   f_c + s f_s + t f_t + st f_{st} \right] \left[ g_c + s g_s + t g_t \right] \pep
+%\eenum
+%\end{subequations}
+%In \eqts{eq:m_expand} we have defined the following:
+%\begin{subequations}
+%\beanum
+%\B{i}(s,t) &=& b_{i,c} + s b_{i,s} + t b_{i,t} + st b_{i,st} \\
+%\frac{\p \B{i}}{\p s} &=& b_{i,s,c} + t b_{i,s,t}  \\
+%\frac{ \p \B{i} }{\p t} &=&  b_{i,t,c} + s b_{i,t,s} \\
+%\abs{\mathbf{J}(s,t) } &=& g_c + s g_s + t g_t \\
+%\frac{\p x}{\p s} &=& x_{s,c} + t x_{s,t} \\
+%\frac{\p x}{\p t} &=& x_{t,c} + s x_{t,s} \\
+%\frac{\p y}{\p s} &=& y_{s,c} + t y_{s,t} \\
+%\frac{\p y}{\p t} &=& y_{t,c} + s y_{t,s} \pep
+%\eeanum
+%\end{subequations}
+Using \verb+MATLAB+\cite{matlab},  each integrand is further expanded, then terms of equal degree bivariate polynomials,  $s^m t^n$,  with $0 \leq m \leq 3$, $0 \leq n \leq 3$, are collected.
+This allows us to calculate the twelve separate integrations of  $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$, as the multiplication of twelve unique sets of constants, $\mathbf{C}_{i,\mu}$, $\mathbf{C}_{i,\eta}$, and $\mathbf{C}_{i,M}$, multiplied  by the integrations of a single bivariate  integration, over $R$.
 
 \subsubsection{Symbolic integration versus numerical integration}
 
-Initially, \verb+MATLAB+\cite{matlab} symbolic algebra generated expressions for the integrations of the generic bivariate polynomials over $R$ were used to evaluate $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$.  This worked well at low cell counts, but caused the \BCSZ non-linear iteration to fail at higher cell counts.
+Initially, \verb+MATLAB+ symbolic algebra generated expressions for the integration of the generic bivariate polynomial over $R$ were used to evaluate $\psi_{i,\mu},~\psi_{i,\eta},~\text{and }\psi_{i,M}$.  This worked well at low cell counts, but caused the \BCSZ~ non-linear iteration to fail at higher cell counts.
 To verify the \verb+MATLAB+ generated expressions, we compared the ``exact'' symbolic algebra generated results for calculating $\psi_{i,M}$ for $\vec{\psi}_{BCSZ} = [-2 ~0.1~200~10]^T$ to the value obtained using $N_s$ Gauss quadrature points in $s$ along the curved boundary.  
-A two-point Gauss quadrature in $t$ was used for each corresponding Gauss point in $s$ (tensor product quadrature).  An example of the quadrature layout is given in \fig{fig:quad} for $N_s = 4$.
+A two-point Gauss quadrature in $t$ was used for each corresponding Gauss point in $s$ (tensor product quadrature).  An example of the quadrature layout for $N_s=4$ is given in \fig{fig:quad}.
 \begin{figure}[h]
 \centering
 \includegraphics[width=3in,trim=0.5in  2.5in  1.in 2.5in,clip=true]{quad_layout.pdf}
-\caption{Quadrature point locations for $N_s = 4$ for quadrature integration test.}
+\caption{Quadrature point locations for quadrature integration test.}
 \label{fig:quad}
 \end{figure}
 In \fig{fig:quad_err}, we plot $E_{i,quad}$, where:
@@ -436,7 +454,7 @@ Compare the result of \fig{fig:quad_err} to \fig{fig:no_err}, which plots $\wide
 \widehat{E}_{i} = \frac{\abs{ \psi_{i,MAX} - \psi_{i,num} }}{\abs{\psi_{i,MAX} }} \pec
 \eenum
 where $\psi_{i,MAX}$ is the quadrature approximation of $\psi_{i,M}$ using Gauss quadrature and $N_S = 40$.
-It is clear that the ``exact'' symbolic evaluated expressions suffer from numerical round-off caused by taking the small difference of large numbers.
+Since increasing the number of Gauss quadrature points increases the accuracy of a given quadrature integration, from \fig{fig:error_comparisons} it is clear that the ``exact'' symbolic evaluated expressions suffer from numerical round-off caused by taking the small difference of large numbers.
 %
 \begin{figure}[h]
 \begin{center}
@@ -456,31 +474,19 @@ It is clear that the ``exact'' symbolic evaluated expressions suffer from numeri
 \end{figure}
 As such, we prefer quadrature integration to evaluate cell integral quantities for the BCSZ scheme.
 However, for a fixed number of Gauss points in $s$, we cannot apriori estimate the error in our quadrature approximation of bivariate polynomial integrals over the region with a curved boundary.
-Gauss-Kronrod quadrature \cite{gk_quad} allows for an estimate of the quadrature error to the approximation of an integration.
-In practice, we now use the 7-point Gauss / 15-point Kronrod quadrature set in is $s$ with a 2-point Gauss quadrature in $t$ to integrate all BCSZ quantities.
-Along with sub-interval refinement, this integration strategy, and the decompositions shown in \fig{fig:bcsz_cases} allow for the computation of all BCSZ cell integral quantities to a tolerance less than our non-linear iteration tolerance.
+Gauss-Kronrod quadrature \cite{gk_quad} allows for an estimate of the quadrature approximation error of an integration.
+In practice, we use the 7-point Gauss / 15-point Kronrod quadrature set in is $s$ with a 2-point Gauss quadrature in $t$ to integrate all BCSZ quantities.
+Using  sub-interval refinement, this quadrature integration strategy, and the decompositions shown in \fig{fig:bcsz_cases} allow for the computation of all BCSZ cell integral quantities to a tolerance less than our non-linear iteration tolerance.
 
-\subsection{BCSZ Edge Integration}
-Along any edge, there are four possible cases.  Assuming that we are looking at edge $\alpha$, but with easy translation to any other edge:
-\begin{enumerate}
-\item $\BCSZH > 0$ along whole edge,
-\item  $\BCSZH < 0$ along whole edge,
-\item $\psi_{0,BCSZ} < 0$, $\psi_{1,BCSZ} > 0$, and
-\item $\psi_{0,BCSZ} > 0$, $\psi_{1,BCSZ} <0$.
-\end{enumerate}
-Case one is straightforward and identical to the integration used by the UBLD scheme. 
-Case two is by definition, zero along the integral.
-Cases three and four are handled by first determining $s_z$, such that $\BCSZH(s_z,-1) = 0$:
-\benum
-s_z = \frac{\psi_{0,BCSZ}+\psi_{1,BCSZ}}{\psi_{0,BCSZ} - \psi_{1,BCSZ} }
-\eenum
-Then a two point Gauss quadrature is mapped to the interval $[s_z,1]$ for case 3 and $[-1,s_z]$ for case 4, and the integral of $\psi_{i,\alpha}$
-is approximated (exactly) using function evaluations at the mapped quadrature points.
+\subsection{Non-linear Iteration}
+To solve the four non-linear equations, we use Newton iteration with a finite difference formed Jacboian.
+Additionally, we solve for ``well'' scaled values, using the first \BCSZH~ iterate ($\widetilde{\psi}_{UBLD}$) as a scaling vector.
+As noted in \cite{csz_me,csz_don} solving for the non-linearity locally during each sweep precludes the use of Krylov methods in the scattering source iteration.
 
 \section{Numerical Results}
 \label{sec:results}
-We now present computational results for a simple test problem, a $10~[cm] \times 10~[cm]$ void, $S_4$ level symmetric angular quadrature,
-with vacuum boundary condition on the left, top, and right sides, incident angular flux of $1~[n/(cm^2-sec-ster)]$ in the direction of $\mu=0.868890300722,~\eta = 0.350021174582$ along the bottom edge, vacuum conditions along the bottom edge for all other directions along the bottom face.
+We now present computational results for a simple test problem, a $10~[cm] \times 10~[cm]$ void, with $S_4$ level symmetric angular quadrature,
+ vacuum boundary conditions on the left, top, and right sides, incident angular flux of $1~[n/(cm^2-sec-ster)]$ in the direction of $\mu=0.868890300722,~\eta = 0.350021174582$ along the bottom edge, and vacuum conditions along the bottom edge for all other directions incident on the bottom face.
 In \fig{fig:negatives} we compare the results of the UBLD, FLBLD, and BCSZ schemes on an orthogonal mesh of $64\times 64$ cells, plotting the cell average scalar fluxes on a logarithmic scale.
 \begin{figure}[h]
 	\begin{center}
@@ -506,7 +512,7 @@ In \fig{fig:negatives} we compare the results of the UBLD, FLBLD, and BCSZ schem
 The negativities and oscillations of the UBLD scheme are obvious.  The BCSZ and FLBLD solutions are both strictly non-negative.  
 However, the FLBLD scheme has a significant amount of numerical diffusion, whereas the BCSZ scheme maintains a sharp boundary at the discontinuity.
 
-In \fig{fig:unstructured} we show the BCSZ and UBLD cell average scalar flux solutions on a 25 cell $\times$ 25 cell mesh with each interior vertex perturbed to create an unstructured mesh.
+In \fig{fig:unstructured} we show the BCSZ and UBLD cell average scalar flux solutions on a 25 cell $\times$ 25 cell mesh where each interior vertex has been randomly perturbed to create an unstructured mesh.
 \begin{figure}[h]
 	\begin{center}
 	\begin{subfigure}{0.45\textwidth}
@@ -524,34 +530,35 @@ In \fig{fig:unstructured} we show the BCSZ and UBLD cell average scalar flux sol
 	\end{center}	
 \end{figure}
 Figure \ref{fig:unstructured} shows the BCSZ scheme is capable of being used for unstructured mesh problems.
-Though the BCSZ solution exhibits some numerical diffusion in \fig{fig:unstructured}, it is a result of the mesh, as the UBLD scheme exhibits the same increase in numerical diffusion, while also demonstrating the negativities and oscillations of the UBLD solution.
+Though the BCSZ solution exhibits some numerical diffusion in \fig{fig:unstructured}, it is a result of the mesh, as the UBLD scheme exhibits similar increases in numerical diffusion.  Again, the UBLD solution exhibits negativities and oscillations and BCSZ remains strictly non-negative.
 
-Finally, in \fig{fig:convergence}, we plot an $E_{\phi_A}$,
+Finally, in \fig{fig:convergence}, we plot $E_{\phi_A}$,
 \benum
 \label{eq:e_phi}
-E_{\phi_A} = \sqrt{ \sum_{c=1}^{N_cells}{ \Delta x_c \Delta y_c (\widetilde{\phi}_A - \phi_{A,exact} )^2} }
+E_{\phi_A} = \sqrt{ \sum_{c=1}^{N_cells}{ \Delta x_c \Delta y_c (\widetilde{\phi}_A - \phi_{A,exact} )^2} } \pec
 \eenum
-an $L_2$ like norm of the average scalar flux in each cell for the UBLD, FLBLD, and BCSZ schemes on orthogonal meshes.  
-In \eqt{eq:e_phi}, $\widetilde{\phi}_A$ is the computed cell average scalar flux for a particular scheme in cell $c$, $\Delta x$ and $\Delta y$ are the respective cell widths of cell $c$, and $\phi_{A,exact}$ is the analytic cell average scalar flux in cell $c$.
+an $L_2$ like norm of the average scalar flux in each cell for the UBLD, FLBLD, and BCSZ schemes on orthogonal meshes as a function of mesh size.  
+In \eqt{eq:e_phi}, $\widetilde{\phi}_A$ is the computed cell average scalar flux for a particular scheme in cell $c$, $\Delta x_c$ and $\Delta y_c$ are the respective cell widths of cell $c$, and $\phi_{A,exact}$ is the analytic cell average scalar flux in cell $c$.
 \begin{figure}[h]
 \centering
 \includegraphics[width=4in]{glance_convergence}
 \caption{Convergence of cell average scalar flux on orthogonal grids.}
 \label{fig:convergence}
 \end{figure}
-From \fig{fig:convergence}, we determine that BCSZ is more accurate than UBLD, while both UBLD and BCSZ are significantly more accurate than FLBD.
-Also, we verify that all methods reach the same asymptotic order of convergence, $h^{1/4}$.
+From \fig{fig:convergence}, we see that BCSZ is more accurate than UBLD, while both UBLD and BCSZ are significantly more accurate than FLBD.
+Also, we see that all methods reach the same asymptotic order of convergence, $h^{1/4}$.
 All of the methods considered converge the error in the cell average angular flux at this low rate due to the discontinuity in the analytic solution.
 
 \section{Conclusions}
 \label{sec:conclusions}
 The BCSZ scheme produces strictly non-negative solutions that are at least as accurate as UBLD solutions.
 To date, the accuracy of the BCSZ scheme has only been measured against pure absorber/void test problems.  
-We are currently awaiting the completion of a modified interior penalty  diffusion synthetic acceleration (MIP DSA) implementation\cite{hackemack} in the TAMU developed $S_N$ solver, PDT\cite{pdt}, to apply the BCSZ to more interesting neutron transport and radiative transfer problems.
+We are currently awaiting the completion of a modified interior penalty  diffusion synthetic acceleration (MIP DSA) \cite{hackemack} implementation in the TAMU developed $S_N$ solver, PDT\cite{pdt}, to apply the BCSZ to more interesting neutron transport and radiative transfer problems.
 We see numerous opportunities for future research going forward including:
 \begin{enumerate}
-\item comparing the efficiency of our current/near term solution methodology (fixed point iteration with MIP DSA) to the solution methodology proposed by Bruss, et al. \cite{csz_don} and
-\item generalizing BCSZ to higher order, $Q_N$ trial spaces through the extension of our adaptive quadrature integration scheme,
+\item developing appropriate timing problems to assess the computational cost of BCSZ relative to UBLD,
+\item comparing the efficiency of our current/near term solution methodology (fixed point iteration with MIP DSA) to the solution methodology proposed by Bruss, et al. \cite{csz_don}, and
+\item generalizing BCSZ to higher order, $Q_N$ trial spaces through the extension of our adaptive quadrature integration scheme.
 \end{enumerate}
 
 
