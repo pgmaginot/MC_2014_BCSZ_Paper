@@ -72,9 +72,9 @@ Texas A\&M University \\
 \maketitle
 
 \begin{abstract}
-We have developed a new, non-negative, non-linear, Petrov-Galerkin discontinuous finite element method (NNPGDFEM), for use in conjunction with Galerkin bilinear discontinuous  
+We have developed a new, non-negative, non-linear, Petrov-Galerkin discontinuous finite element method for use in conjunction with Galerkin bilinear discontinuous  
 (BLD) finite element differencing of the 2-D Cartesian geometry $S_N$ equations for quadrilaterals on an unstructured mesh.  
-This work is an extension of the idea that drove our previous development of a NNPGDFEM for use with linear discontinuous (LD) differencing of the 2-D Cartesian geometry $S_N$ equations for rectangular mesh cells.
+This work is an extension of a scheme we previously developed for use with linear discontinuous (LD) differencing of the 2-D Cartesian geometry $S_N$ equations for rectangular mesh cells.
 We present the theory and equations that describe the new method.  
 Additionally, we numerically compare the accuracy of our proposed method to the accuracy of BLD without lumping and the subcell corner balance method (equivalent to a ``fully'' lumped BLD scheme) for a test problem that causes BLD scheme to generate negative angular flux solutions.
 
@@ -99,7 +99,7 @@ Several researchers have examined several different methods (matrix lumping\cite
 However, Adams showed that LD does not maintain the neutronics thick diffusion limit on quadrilaterals \cite{adams_dfem}.
 We are interested in accurate methods for radiative transfer, therefore we seek methods that can maintain the equilibrium diffusion limit on quadrilaterals.
 If a radiative transfer spatial discretization is to maintain the equilibrium diffusion limit, its neutron transport analog must preserve the the thick diffusion limit.
-As a first step towards accurate methods for radiative transfer on quadrilaterals, we seek a new, non-negative, bilinear discontinuous (BLD) finite element spatial discretization of the neutron transport equation for quadrilaterals.
+As a first step towards accurate methods for radiative transfer on quadrilaterals, we seek a new, non-negative, finite element discretization that the maintains the bilinear spatial moments of the neutron transport equation on quadrilaterals.
 
 The Galerkin BLD spatial discretization for quadrilaterals, more commonly referred to as unlumped bilinear discontinuous (UBLD) yields negative angular flux solutions for spatial cells with glancing radiation incidence and/or large optical thickness \cite{adams_dfem}. 
 To our knowledge, only matrix lumping has been considered  in an attempt to inhibit negative angular flux solutions of BLD spatial discretizations.
@@ -107,8 +107,8 @@ While more common forms of matrix lumping, such as mass matrix or combination ma
 Wareing, et al., derived the fully lumped BLD (FLBLD) scheme \cite{flbld}, that uses additional manipulations of the UBLD equations to yield angular flux solutions that are strictly non-negative for source-free pure absorber problems.
 Unfortunately, Adams demonstrated that FLBLD, which is equivalent to the subcell balance method on rectangles, is less accurate than unlumped BLD (UBLD) scheme for spatial mesh cells of thin and intermediate thicknesses \cite{adams_scb}.
 
-In \cite{csz_me}, we developed a non-negative, non-linear Petrov-Galerkin DFEM for use in conjunction with LD spatial differencing of the $S_N$ equations in slab and rectangular Cartesian geometry.  
-In this paper, will extend the main idea of \cite{csz_me} to create a non-negative, non-linear Petrov-Galerkin DFEM to be used with UBLD spatial differencing on unstructured quadrilaterals.
+In \cite{csz_me}, we developed a non-negative, non-linear Petrov-Galerkin DFEM spatial differencing scheme that maintains the linear discontinuous spatial moments of the $S_N$ neutron transport equations in slab and rectangular Cartesian geometry.  
+In this paper, will extend the main idea of \cite{csz_me} to create a non-negative, non-linear Petrov-Galerkin DFEM scheme that will maintain the bilinear discontinuous spatial moments of the neutron transport equation on quadrilaterals.
 The remainder of this paper is divided as follows: a brief derivation common to all bilinear DFEM is given in Section \ref{sec:mom_eqs}, description and derivation of our new, bilinear consistent set-to-zero (BCSZ) Petrov-Galerkin DFEM scheme is given in Section \ref{sec:bcsz},  computational results demonstrating the strictly positive nature of BCSZ and its improved accuracy relative to UBLD and FLBLD are given in Section \ref{sec:results}, and conclusions are given in Section \ref{sec:conclusions}.
 
 \section{Moment Equations}
@@ -241,7 +241,7 @@ Using the definition of \BCSZ~ given in \eqt{eq:bcsz} turns the four spatial mom
 For brevity, we omit a complete derivation of the four spatial moment equations.  Rather, we choose to focus on defining the important characteristics of the BCSZ scheme, namely how the BCSZ scheme defines the following moments equation terms:
 \begin{enumerate}
 \item edge leakage, $\psi_{i,edge}$,
-\item cell volume gradients, $\psi_{i\mu}$ and $\psi_{\eta}$, and
+\item cell volume gradients, $\psi_{i,\mu}$ and $\psi_{i,\eta}$, and
 \item cell volume moments, $\psi_{i,M}$.
 \end{enumerate}
 The $\psi_{i,edge}$ terms come from the moment equation integration by parts:
@@ -459,12 +459,12 @@ Since increasing the number of Gauss quadrature points increases the accuracy of
 \begin{figure}[h]
 \begin{center}
 	\begin{subfigure}{0.45\textwidth}
-		\includegraphics[width=2.5in,trim=0.5in  2.5in  1.0in 2.5in,clip=true]{err_gauss_to_matlab_exact.pdf}
+		\includegraphics[width=2.5in,trim=0.5in  2.5in  1.0in 2.5in,clip=true]{err_gauss_to_matlab_exact.png}
 		\caption{$E_i$ for quadrature test.}
 		\label{fig:quad_err}
 	\end{subfigure}
 	\begin{subfigure}{0.45\textwidth}
-		\includegraphics[width=2.5in,trim=0.5in  2.5in  1in 2.5in,clip=true]{err_gauss_to_highest_gauss.pdf}
+		\includegraphics[width=2.5in,trim=0.5in  2.5in  1in 2.5in,clip=true]{err_gauss_to_highest_gauss.png}
 		\caption{$\widehat{E}_i$ for quadrature test.}
 		\label{fig:no_err}
 	\end{subfigure}
@@ -509,28 +509,35 @@ In \fig{fig:negatives} we compare the results of the UBLD, FLBLD, and BCSZ schem
 	\caption{$64\times 64$ mesh cell cell average scalar flux solutions}
 	\label{fig:negatives}
 \end{figure}
-The negativities and oscillations of the UBLD scheme are obvious.  The BCSZ and FLBLD solutions are both strictly non-negative.  
+Plotting on a logarithmic scale accents the negativities and oscillations of the UBLD scheme.
+Though undesirable, the negativities and oscillations of the UBLD dampen rapidly.  
+The BCSZ and FLBLD solutions are both strictly non-negative.  
 However, the FLBLD scheme has a significant amount of numerical diffusion, whereas the BCSZ scheme maintains a sharp boundary at the discontinuity.
 
 In \fig{fig:unstructured} we show the BCSZ and UBLD cell average scalar flux solutions on a 25 cell $\times$ 25 cell mesh where each interior vertex has been randomly perturbed to create an unstructured mesh.
 \begin{figure}[h]
 	\begin{center}
-	\begin{subfigure}{0.45\textwidth}
-		\includegraphics[width=3in]{bcsz_unstruct.png}
-		\caption{BCSZ solution on unstructured grid.}
-		\label{fig:unstructured_bcsz}
-	\end{subfigure}	
-	\begin{subfigure}{0.45\textwidth}
-		\includegraphics[width=3in]{bild_unstruct.png}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=2in]{scb_unstruct.png}
+		\caption{FLBLD solution on unstructured grid.}		
+		\label{fig:unstructured_scb}
+	\end{subfigure}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=2in]{bild_unstruct.png}
 		\caption{UBLD solution on unstructured grid.}		
 		\label{fig:unstructured_bild}
 	\end{subfigure}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=2in]{bcsz_unstruct.png}
+		\caption{BCSZ solution on unstructured grid.}
+		\label{fig:unstructured_bcsz}
+	\end{subfigure}		
 	\caption{Glancing void solutions with $25\times 25$ mesh cells.}
 	\label{fig:unstructured}
 	\end{center}	
 \end{figure}
 Figure \ref{fig:unstructured} shows the BCSZ scheme is capable of being used for unstructured mesh problems.
-Though the BCSZ solution exhibits some numerical diffusion in \fig{fig:unstructured}, it is a result of the mesh, as the UBLD scheme exhibits similar increases in numerical diffusion.  Again, the UBLD solution exhibits negativities and oscillations and BCSZ remains strictly non-negative.
+Though the BCSZ solution exhibits some numerical diffusion in \fig{fig:unstructured}, it is a result of the mesh, as both the FLBLD and UBLD schemes exhibit similar increases in numerical diffusion.  Again, the UBLD solution exhibits negativities and oscillations while the SCB and BCSZ solutions remain strictly non-negative.
 
 Finally, in \fig{fig:convergence}, we plot $E_{\phi_A}$,
 \benum
