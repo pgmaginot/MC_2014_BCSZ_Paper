@@ -485,7 +485,7 @@ In practice, we use the 7-point Gauss / 15-point Kronrod quadrature set in $s$ w
 Using  sub-interval refinement, this quadrature integration strategy, and the decompositions shown in \fig{fig:bcsz_cases} allow for the computation of all BCSZ cell integral quantities to a tolerance less than our non-linear iteration tolerance.
 
 \subsection{Non-linear Iteration}
-To solve the four non-linear equations, we use Newton iteration with a finite difference formed Jacboian.
+To solve the four non-linear equations, we use Newton iteration with a finite difference formed Jacobian.
 Additionally, we solve for ``well'' scaled values, using the first \BCSZH~ iterate ($\widetilde{\psi}_{UBLD}$) as a scaling vector.
 As noted in \cite{csz_me,csz_don} solving for the non-linearity locally during each sweep precludes the use of Krylov methods in the scattering source iteration.
 
@@ -617,7 +617,7 @@ We see numerous opportunities for future research going forward including:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Acknowledgments}
 
-Portions of this work were funded by the Department of Energy CSGF program, adminstered by the Krell Institute, under grant DE-FG02-97ER25308.
+Portions of this work were funded by the Department of Energy CSGF program, administered by the Krell Institute, under grant DE-FG02-97ER25308.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \setlength{\baselineskip}{12pt}
