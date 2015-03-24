@@ -93,22 +93,22 @@ Additionally, we numerically compare the accuracy of our proposed method to the 
 %
 %
 
-Discontinuous finite element method (DFEM) spatial discretizations of the $S_N$ neutron transport equation and $S_N$ thermal radiative transfer equations can result in negative angular flux and negative angular intensity solutions.  
+Discontinuous finite element method (DFEM) spatial discretizations of the $S_N$ neutron transport equation can result in negative angular flux solutions.  
 These negative solutions are non-physical, but inherent to the mathematics that define the radiation spatial differencing scheme.
 Several researchers have examined different methods (matrix lumping\cite{adams_dfem}, fix-ups\cite{fichtl}, and strictly non-negative solution representations\cite{csz_me}) that inhibit or eliminate the negativities of the linear discontinuous (LD) finite element scheme on  a variety of spatial mesh cell types for the $S_N$ neutron transport equation.
 However, Adams showed that LD does not maintain the neutronics thick diffusion limit on quadrilaterals \cite{adams_dfem}.
-We are interested in accurate methods for radiative transfer, therefore we seek methods that can maintain the equilibrium diffusion limit on quadrilaterals.
+Our ultimate goal is to find accurate DFEM spatial discretization methods for thermal radiative transfer on quadrilaterals.
 If a radiative transfer spatial discretization is to maintain the equilibrium diffusion limit, its neutron transport analog must preserve the thick diffusion limit.
-As a first step towards accurate methods for radiative transfer on quadrilaterals, we seek a new, non-negative, finite element discretization that the maintains the bilinear spatial moments of the neutron transport equation on quadrilaterals.
+As a first step towards our ultimate goal, we seek a new, non-negative, finite element discretization that maintains the bilinear spatial moments of the neutron transport equation on quadrilaterals.
 
-The unlumped bilinear discontinuous (UBLD) spatial scheme yields negative angular flux solutions for quadrilateral cells with grazong radiation incidence and/or large optical thickness \cite{adams_dfem}. 
-To our knowledge, only matrix lumping has been considered  in an attempt to inhibit negative angular flux solutions of BLD spatial discretizations.
+The unlumped bilinear discontinuous (UBLD) spatial scheme yields negative angular flux solutions for quadrilateral cells with grazing radiation incidence and/or large optical thickness \cite{adams_dfem}. 
+Though matrix lumping, flux fix-ups, and strictly non-negative solution representations are not limited to LD, to our knowledge, only matrix lumping has been considered  in an attempt to inhibit negative angular flux solutions of BLD spatial discretizations.
 While more common forms of matrix lumping, such as mass matrix or combination mass and surface matrix lumping, inhibit negative angular flux solutions, they do not guarantee a strictly non-negative BLD angular flux solution  for source-free pure absorber problems\cite{adams_dfem}.
 Wareing, et al., derived the fully lumped BLD (FLBLD) scheme \cite{flbld} that uses additional manipulations of the UBLD equations to yield angular flux solutions that are strictly non-negative for source-free pure absorber problems.
-Unfortunately, Adams demonstrated that FLBLD, which is equivalent to the subcell balance method on rectangles, is less accurate than unlumped BLD (UBLD) scheme for spatial mesh cells of thin and intermediate thicknesses \cite{adams_scb}.
+Unfortunately, Adams demonstrated that FLBLD, which is equivalent to the subcell balance method on rectangles, is less accurate than the unlumped BLD (UBLD) scheme for spatial mesh cells of thin and intermediate thicknesses \cite{adams_scb}.
 
 In \cite{csz_me}, we developed a non-negative, non-linear Petrov-Galerkin DFEM spatial differencing scheme that maintains the linear discontinuous spatial moments of the $S_N$ neutron transport equations in slab and rectangular Cartesian geometry.  
-In this paper, will extend the main idea of \cite{csz_me} to create a non-negative, non-linear Petrov-Galerkin DFEM scheme that will maintain the bilinear discontinuous spatial moments of the neutron transport equation on quadrilaterals.
+In this paper, we will extend the main idea of \cite{csz_me} to create a non-negative, non-linear Petrov-Galerkin DFEM scheme that will maintain the bilinear discontinuous spatial moments of the neutron transport equation on quadrilaterals.
 The remainder of this paper is divided as follows: a brief derivation common to all bilinear DFEM is given in Section \ref{sec:mom_eqs}, description and derivation of our new, bilinear consistent set-to-zero (BCSZ) Petrov-Galerkin DFEM scheme is given in Section \ref{sec:bcsz},  computational results demonstrating the strictly positive nature of BCSZ and its improved accuracy relative to UBLD and FLBLD are given in Section \ref{sec:results}, and conclusions are given in Section \ref{sec:conclusions}.
 
 \section{Moment Equations}
@@ -218,7 +218,7 @@ The UBLD scheme assumes a solution trial space equal to the basis space,
 Under this assumption, the spatial moments of the transport equation become a $4\times 4$ linear system of equations.  
 Interested readers are directed to \cite{adams_dfem} or one of the many other papers that have derived and used UBLD on rectangles and quadrilaterals for a more complete derivation.
 
-The FLBLD scheme \cite{flbld,adams_dfem}, alternatively derived as the subcell balance method on quadrilaterals \cite{adams_scb} begins with the UBLD equations then lumps (diagonalizes) the UBLD mass and surface matrices.  The FLBLD equations are then further manipulated to result in a scheme that is yields strictly non-negative solutions for source-free pure absorber solutions.  The FLBLD scheme is second order convergent in space, but can be less accurate than UBLD for cells of intermediate and thin optical thicknesses.  Interested readers are directed to \cite{flbld,adams_dfem,adams_scb} for a more detailed derivation.
+The FLBLD scheme \cite{flbld,adams_dfem}, alternatively derived as the subcell balance method on quadrilaterals \cite{adams_scb} begins with the UBLD equations then lumps (diagonalizes) the UBLD mass and surface matrices.  The FLBLD equations are then further manipulated to result in a scheme that yields strictly non-negative solutions for source-free pure absorber solutions.  The FLBLD scheme is second order convergent in space, but can be less accurate than UBLD for cells of intermediate and thin optical thicknesses.  Interested readers are directed to \cite{flbld,adams_dfem,adams_scb} for a more detailed derivation.
 
 The BCSZ scheme is defined as being a bilinear function, $\BCSZH(s,t)$, 
 \benum
@@ -368,7 +368,7 @@ To find a variable limit of integration with respect to $t$ as a function of $s$
 f(s,t) = f_c + s f_s + t f_t + st f_{st} \pep
 \label{eq:f_def}
 \eenum
-The coefficients of $f$ are found formula using the interpolatory definition of the basis functions:
+The coefficients of $f$ are found using the interpolatory definition of the basis functions:
 \benum
 \left[ 
 \begin{array}{cccc}
@@ -485,9 +485,10 @@ In practice, we use the 7-point Gauss / 15-point Kronrod quadrature set in $s$ w
 Using  sub-interval refinement, this quadrature integration strategy, and the decompositions shown in \fig{fig:bcsz_cases} allow for the computation of all BCSZ cell integral quantities to a tolerance less than our non-linear iteration tolerance.
 
 \subsection{Non-linear Iteration}
-To solve the four non-linear equations, we use Newton iteration with a finite difference formed Jacobian.
+To solve the four non-linear equations, we use damped Newton iteration with a finite difference formed Jacobian.
 Additionally, we solve for ``well'' scaled values, using the first \BCSZH~ iterate ($\widetilde{\psi}_{UBLD}$) as a scaling vector.
 As noted in \cite{csz_me,csz_don} solving for the non-linearity locally during each sweep precludes the use of Krylov methods in the scattering source iteration.
+For a typical single cell, single energy group, single direction solve, BCSZ requires on the order of 8-10 Newton iterations for a factor of $10^{-10}$ reduction in the non-linear residual.
 
 \section{Numerical Results}
 \label{sec:results}
@@ -520,22 +521,22 @@ Though undesirable, the negativities and oscillations of the UBLD dampen rapidly
 The BCSZ and FLBLD solutions are both strictly non-negative.  
 However, the FLBLD scheme has a significant amount of numerical diffusion, whereas the BCSZ scheme maintains a sharp boundary at the discontinuity.
 
-In \fig{fig:unstructured} we show the BCSZ and UBLD cell average scalar flux solutions on a 25 cell $\times$ 25 cell mesh where each interior vertex has been randomly perturbed to create an unstructured mesh.
+In \fig{fig:unstructured} we show the BCSZ and UBLD cell average scalar flux solutions on a 25 cell $\times$ 25 cell mesh where each interior vertex has been randomly perturbed to create a distorted mesh.
 \begin{figure}[h]
 	\begin{center}
 	\begin{subfigure}{0.3\textwidth}
 		\includegraphics[width=2in]{scb_unstruct.png}
-		\caption{FLBLD solution on unstructured grid.}		
+		\caption{FLBLD solution on distorted mesh.}		
 		\label{fig:unstructured_scb}
 	\end{subfigure}
 	\begin{subfigure}{0.3\textwidth}
 		\includegraphics[width=2in]{bild_unstruct.png}
-		\caption{UBLD solution on unstructured grid.}		
+		\caption{UBLD solution on distorted mesh}		
 		\label{fig:unstructured_bild}
 	\end{subfigure}
 	\begin{subfigure}{0.3\textwidth}
 		\includegraphics[width=2in]{bcsz_unstruct.png}
-		\caption{BCSZ solution on unstructured grid.}
+		\caption{BCSZ solution on distorted.}
 		\label{fig:unstructured_bcsz}
 	\end{subfigure}		
 	\caption{Glancing void solutions with $25\times 25$ mesh cells.}
@@ -548,7 +549,7 @@ Though the BCSZ solution exhibits numerical diffusion in \fig{fig:unstructured},
 Finally, in \fig{fig:convergence}, we plot $E_{\phi_A}$,
 \benum
 \label{eq:e_phi}
-E_{\phi_A} = \sqrt{ \sum_{c=1}^{N_cells}{ \Delta x_c \Delta y_c (\widetilde{\phi}_A - \phi_{A,exact} )^2} } \pec
+E_{\phi_A} = \sqrt{ \sum_{c=1}^{N_{cells}}{ \Delta x_c \Delta y_c (\widetilde{\phi}_A - \phi_{A,exact} )^2} } \pec
 \eenum
 an $L_2$ like norm of the average scalar flux in each cell for the UBLD, FLBLD, and BCSZ schemes on orthogonal meshes as a function of mesh size.  
 In \eqt{eq:e_phi}, $\widetilde{\phi}_A$ is the computed cell average scalar flux for a particular scheme in cell $c$, $\Delta x_c$ and $\Delta y_c$ are the respective cell widths of cell $c$, and $\phi_{A,exact}$ is the analytic cell average scalar flux in cell $c$.
