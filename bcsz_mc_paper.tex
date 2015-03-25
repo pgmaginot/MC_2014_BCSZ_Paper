@@ -488,7 +488,7 @@ Using  sub-interval refinement, this quadrature integration strategy, and the de
 To solve the four non-linear equations, we use damped Newton iteration with a finite difference formed Jacobian.
 Additionally, we solve for ``well'' scaled values, using the first \BCSZH~ iterate ($\widetilde{\psi}_{UBLD}$) as a scaling vector.
 As noted in \cite{csz_me,csz_don} solving for the non-linearity locally during each sweep precludes the use of Krylov methods in the scattering source iteration.
-For a typical single cell, single energy group, single direction solve, BCSZ requires on the order of 8-10 Newton iterations for a factor of $10^{-10}$ reduction in the non-linear residual.
+
 
 \section{Numerical Results}
 \label{sec:results}
@@ -499,17 +499,17 @@ In \fig{fig:negatives} we compare the results of the UBLD, FLBLD, and BCSZ schem
 	\begin{center}
 		\begin{subfigure}{0.3\textwidth}
 			\includegraphics[width=2in]{cb_64.png}
-			\caption{FLBLD solution}
+			\caption{FLBLD}
 			\label{fig:scb_64}		
 		\end{subfigure}
 		\begin{subfigure}{0.3\textwidth}
 			\includegraphics[width=2in]{bild_64.png}
-			\caption{UBLD solution}
+			\caption{UBLD}
 			\label{fig:bild_64}		
 		\end{subfigure}
 		\begin{subfigure}{0.3\textwidth}
 			\includegraphics[width=2in]{bcsz_64.png}
-			\caption{BCSZ solution}
+			\caption{BCSZ}
 			\label{fig:bcsz_64}		
 		\end{subfigure}
 	\end{center}
@@ -526,17 +526,17 @@ In \fig{fig:unstructured} we show the BCSZ and UBLD cell average scalar flux sol
 	\begin{center}
 	\begin{subfigure}{0.3\textwidth}
 		\includegraphics[width=2in]{scb_unstruct.png}
-		\caption{FLBLD solution on distorted mesh.}		
+		\caption{FLBLD}		
 		\label{fig:unstructured_scb}
 	\end{subfigure}
 	\begin{subfigure}{0.3\textwidth}
 		\includegraphics[width=2in]{bild_unstruct.png}
-		\caption{UBLD solution on distorted mesh}		
+		\caption{UBLD}		
 		\label{fig:unstructured_bild}
 	\end{subfigure}
 	\begin{subfigure}{0.3\textwidth}
 		\includegraphics[width=2in]{bcsz_unstruct.png}
-		\caption{BCSZ solution on distorted.}
+		\caption{BCSZ}
 		\label{fig:unstructured_bcsz}
 	\end{subfigure}		
 	\caption{Glancing void solutions with $25\times 25$ mesh cells.}
@@ -562,6 +562,7 @@ In \eqt{eq:e_phi}, $\widetilde{\phi}_A$ is the computed cell average scalar flux
 From \fig{fig:convergence}, we see that BCSZ is more accurate than UBLD, while both UBLD and BCSZ are significantly more accurate than FLBD.
 Also, we see that all methods reach the same asymptotic order of convergence, $h^{1/4}$.
 All of the methods considered converge the error in the cell average angular flux at this low rate due to the discontinuity in the analytic solution.
+In the above results BCSZ required an average of 10 Newton iterations for a factor of $10^{-10}$ reduction in the non-linear residual for any cell/direction where $\BCSZ \neq \widetilde{\psi}_{UBLD}$ 
 
 \section{Conclusions}
 \label{sec:conclusions}
@@ -618,7 +619,8 @@ We see numerous opportunities for future research going forward including:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Acknowledgments}
 
-Portions of this work were funded by the Department of Energy CSGF program, administered by the Krell Institute, under grant DE-FG02-97ER25308.
+Portions of this work were funded by the Department of Energy CSGF program, administered by the Krell Institute, under grant DE-FG02-97ER25308
+Additional support was provided by the Department of Energy, National Nuclear Security Administration, under Award Number(s) DE-NA0002376.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \setlength{\baselineskip}{12pt}
