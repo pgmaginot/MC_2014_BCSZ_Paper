@@ -8,7 +8,8 @@
 \usepackage{float}
 \usepackage{multirow}
 \usepackage{alphalph}
-\usepackage{lipsum}
+%\usepackage{lipsum}
+%\usepackage{verbatim}
 
 
 %\usepackage{geometry}[width=5in,height=3.75in]
@@ -108,7 +109,6 @@ M\&C 2015 %\usebeamerfont{section in head/foot}\insertshorttitle
 
 \begin{enumerate}
 \item Goal/Motivation
-\item Basics
 \item BCSZ Method
 \item Initial Results
 \end{enumerate}
@@ -122,66 +122,63 @@ M\&C 2015 %\usebeamerfont{section in head/foot}\insertshorttitle
 \subsection{Goal}
 \begin{frame}
 \frametitle{Goal}
-Long term goal: Accurate methods for multi-dimensional radiative transfer
-Near term goal: Non-negative bilinear DFEM for neutron transport
--Why bilinear? Bilinear DFEM maintains thick diffusion limit, radiative transfer requires optically thick cells
-History: Extension of non-negative linear $(1,x,y)$ scheme developed on rectangles
-\end{frame}
-
-%---------------------------------------------------------------------------------------------
-
-\section{Basics}
-
-\subsection{DFEM Basics}
-
-\begin{frame}
-\frametitle{Formalities}
-Solving
-\benum
-\omg_d \cdot \nabla \psi_d(x,y) + \sigma_t(x,y) \psi_d(x,y) = S_d(x,y)
-\label{eq:transport}
-\eenum
-for unstructured quadrilaterals using bilinear ($Q^1$) DFEM.
-
 \begin{itemize}
-\item Using the standard interpolatory basis functions
+\item Long term goal: Accurate methods for multi-dimensional radiative transfer
+\item Near term goal: Non-negative bilinear DFEM for neutron transport
+\begin{itemize}
+\item Bilinear DFEM required on quads to maintain thick diffusion limit
+\item Radiative transfer cells will almost certainly be optically thick
 \end{itemize}
-\bea
-\B{0}(s,t) &=& \frac{1-s}{2}\frac{1-t}{2} \\
-\B{1}(s,t) &=& \frac{s+1}{2}\frac{1-t}{2} \\
-\B{2}(s,t) &=& \frac{s+1}{2}\frac{t+1}{2} \\
-\B{3}(s,t) &=& \frac{1-s}{2}\frac{t+1}{2}  
-\eea
-
+\item History: Extension of non-negative linear $(1,x,y)$ scheme developed on rectangles
+\end{itemize}
 \end{frame}
 
 %---------------------------------------------------------------------------------------------
 
-\subsection{Geometry Mapping}
-\begin{frame}
-\frametitle{Mapping to Reference Coordinates}
-All work carried out on a reference element, $s\in[-1,1]~,t\in[-1,1]$
-\begin{figure}[t]
-\centering
-\includegraphics[width=3in]{mc_coord.pdf}
-\end{figure}
+%\section{Basics}
 %
+%\subsection{DFEM Basics}
 %
-\beanum
-x &=& x_0 \B{0}(s,t) + x_1 \B{1}(s,t) + x_2 \B{2}(s,t) + x_3 \B{3}(s,t) \\
-y &=&  y_0 \B{0}(s,t) + y_1 \B{1}(s,t) + y_2 \B{2}(s,t) + y_3 \B{3}(s,t) 
-\eeanum
-\end{frame}
+%\begin{frame}
+%\frametitle{Formalities}
+%Solving
+%\benum
+%\omg_d \cdot \nabla \psi_d(x,y) + \sigma_t(x,y) \psi_d(x,y) = S_d(x,y)
+%\label{eq:transport}
+%\eenum
+%for unstructured quadrilaterals using bilinear ($Q^1$) DFEM.
+%
+%\begin{itemize}
+%\item Using the standard interpolatory basis functions
+%\end{itemize}
+%\bea
+%\B{0}(s,t) &=& \frac{1-s}{2}\frac{1-t}{2} \\
+%\B{1}(s,t) &=& \frac{s+1}{2}\frac{1-t}{2} \\
+%\B{2}(s,t) &=& \frac{s+1}{2}\frac{t+1}{2} \\
+%\B{3}(s,t) &=& \frac{1-s}{2}\frac{t+1}{2}  
+%\eea
+%
+%\end{frame}
+%
+%%---------------------------------------------------------------------------------------------
+%
+%\subsection{Geometry Mapping}
+%\begin{frame}
+%\frametitle{Mapping to Reference Coordinates}
+%All work carried out on a reference element, $s\in[-1,1]~,t\in[-1,1]$
+%\begin{figure}[t]
+%\centering
+%\includegraphics[width=3in]{mc_coord.pdf}
+%\end{figure}
+%%
+%%
+%\beanum
+%x &=& x_0 \B{0}(s,t) + x_1 \B{1}(s,t) + x_2 \B{2}(s,t) + x_3 \B{3}(s,t) \\
+%y &=&  y_0 \B{0}(s,t) + y_1 \B{1}(s,t) + y_2 \B{2}(s,t) + y_3 \B{3}(s,t) 
+%\eeanum
+%\end{frame}
 
-\begin{frame}
-\frametitle{Methods to Compare}
-\begin{enumerate}
-\item UBLD: Unlumped Bilinear DFEM- Galerkin DFEM, no explanation necessary \vspace{0.2in}
-\item FLBLD: Fully Lumped Bilinear DFEM- UBLD with mass matrix lumping, surface matrix lumping, and other manipulations.  Equivalent to sub-cell corner balance. \vspace{0.2in}
-\item BCSZ: Bilinear consistent set-to-zero: Non-linear, Petrov-Galerkin DFEM, satisfies all bilinear moments of \eqt{eq:transport} 
-\end{enumerate}
 
-\end{frame}
 
 %---------------------------------------------------------------------------------------------
 
@@ -217,9 +214,10 @@ DFEM moment equations will need to integrate quantities like this on cell edges:
 \begin{enumerate}
 \item Check vertices for negativity
 \item By definition of \BCSZ, integrate \BCSZH ~only over portion of the interval where $\BCSZH\geq 0$
-\begin{itemize}
-\item 4 possible cases
-\end{itemize}
+\item If $\psi_L < 0$ or $\psi_R < 0$:
+\be
+s_z = \frac{\psi_{L}+\psi_{R}}{\psi_{L} - \psi_{R} }
+\ee
 \end{enumerate}
 
 \end{frame}
@@ -301,7 +299,9 @@ Along each integration area defined by a curve, $f(s,t) = 0$, and
 \hat{l}_t  = -\frac{f_c + f_s s}{f_t + f_{st} s} \pec
 \eenum
 enabling the use of variable limits of integration. 
-Consider integration over the region where $\BCSZH>0$, $R_+$, of a generic function $M(s,t)$:
+\\
+\vspace{0.1in}
+Consider integration over the domain, $R_+$, where $\BCSZH>0$:
 \begin{columns}[c]
 \column{0.3\textwidth}
 \begin{figure}
@@ -316,13 +316,252 @@ Consider integration over the region where $\BCSZH>0$, $R_+$, of a generic funct
 \end{columns}
 \end{frame}
 
+
+\section{Computational Finesse}
 \subsection{Almost Analytic Integration}
 
+\begin{frame}
+\frametitle{Isn't MATLAB Right?}
+Initial thinking:
+\begin{itemize}
+\item Must respect curved boundary of integration regions
+%
+\begin{itemize}
+\item Only possible with analytic integration via variable limits of integration.
+\end{itemize}
+%
+\item MATLAB gives a solution, that solution must be right
+%
+\begin{itemize}
+\item Boldly [blindly] assumes we live in an analytic, not finite precision world
+\end{itemize}
+%
+\end{itemize}
+This results in:
+\begin{itemize}
+\item Occasional trouble with non-linear iteration
+\begin{itemize}
+\item Predominantly with nearly zero solutions
+\end{itemize}
+\item Maybe blindly trusting MATLAB is bad?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Quadrature Test}
+\begin{columns}[c]
+\column{0.4\textwidth}
+Quadrature integrate $\psi_{i,M}$
+\be 
+\int{\int_{R^+}{\abs{\mathbf J}\B{i} \BCSZH~dsdt}}
+\ee
+\bea
+E_{i} &=& \frac{\abs{ \psi_{i,sym} - \psi_{i,num} }}{\abs{\psi_{i,sym} }} \\
+\widehat{E}_{i} &=& \frac{\abs{ \psi_{i,MAX} - \psi_{i,num} }}{\abs{\psi_{i,MAX} }}
+\eea
+
+\column{0.6\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=2.5in,trim=0.6in  2.5in  1.in 2.5in,clip=true]{quad_layout.pdf}
+\caption{Quadrature layout with $i=4$}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Evidence of Numerical Precision Issues}
+\vspace{-.75in}
+\begin{columns}[t]
+\column{0.5\textwidth}
+\begin{figure}[h]
+\centering
+		\includegraphics[width=2.25in]{err_gauss_to_matlab_exact.png}
+		\caption{$E_i$ for quadrature test.}
+		\label{fig:quad_err}
+\end{figure}
+
+\column{0.5\textwidth}
+\begin{figure}
+\centering
+		\includegraphics[width=2.25in]{err_gauss_to_highest_gauss.png}
+		\caption{$\widehat{E}_i$ for quadrature test.}
+		\label{fig:no_err}
+\end{figure}
+\end{columns}
+\vspace{0.1in}
+{\bf Modification}: Adaptive Gauss-Kronrod quadrature to evaluate cell integrals
+\end{frame}
+
 \subsection{Non-linear Iteration}
+\begin{frame}
+\frametitle{Non-linear Iteration}
+\begin{itemize}
+\item Newton iteration with finite difference formed Jacobian
+\item $\BCSZH^{(0)} = \widetilde{\psi}_{UBLD}$
+\item Damping with restart based on iteration count
+\item Solve for local unknowns (1 solve per cell, direction, group [if needed])
+\item Search for scaled \BCSZH.  Scale using $\BCSZH^{(0)}$
+\item $\epsilon = \epsilon_{rel} R^{(0)} + \epsilon_{abs} \norm{\text{RHS}}_{L_2}$
+\item $\epsilon_{rel} = 10^{-10}$, $\epsilon_{abs} = 10^{-12}$
+\item Usually 7-10 Newton iterations per solve
+\end{itemize}
+\end{frame}
+
+\subsection{Implementation in PDT}
+\begin{frame}
+\frametitle{Implementation in PDT}
+
+\begin{itemize}
+\item PDT assumes unknowns live at cell vertices, and all methods are linear (not non-linear)
+\begin{itemize}
+\item But, BCSZ is obviously non-linear
+\end{itemize}
+\item Work around required
+\begin{enumerate}
+\item Add if statement in sweep.  Affects all methods
+\item Multiply $\psi_{i,M}$ of converged \BCSZ~ by inverse mass matrix
+\begin{itemize}
+\item Gives a bilinear function with same cell $\psi_{i,M}$ moments as \BCSZ
+\end{itemize}
+\item Prepare outflow for downwind cells
+\begin{itemize}
+\item Calculate linear/nodal values necessary to yield BCSZ edge moments 
+\end{itemize}
+\end{enumerate}
+\item Exact BCSZ solution representation cannot be recreated without sweeping again
+\begin{itemize}
+\item Cell average BCSZ flux retained with work around
+\item Spatial moments preserved, does not affect physics coupling
+\end{itemize}
+\end{itemize}
+\end{frame}
 
 %---------------------------------------------------------------------------------------------
 
-\section{Initial Computational Results}
+\section{Computational Results}
+\subsection{Comparators}
+\begin{frame}
+\frametitle{Methods to Compare}
+\begin{enumerate}
+\item UBLD: Unlumped Bilinear DFEM- Galerkin DFEM, no explanation necessary \vspace{0.2in}
+\item SCB/FLBLD: Subcell Corner Balance- On rectangles, Equivalent to UBLD with mass matrix lumping, surface matrix lumping, and other manipulations \vspace{0.2in}
+\item BCSZ: Bilinear consistent set-to-zero- Non-linear, Petrov-Galerkin DFEM, satisfies all bilinear spatial moments of the transport equation
+\end{enumerate}
+
+\end{frame}
+\subsection{Structured Mesh}
+\begin{frame}
+\frametitle{Test Problem}
+
+\begin{itemize}
+\item $10[cm] \times 10[cm]$ square void
+\item Vacuum BC on left, top, right edges
+\item Incident flux of 1 $[n/(cm^2-sec-ster)]$ in one direction on bottom edge
+\begin{itemize}
+\item $\mu =0.868890300722,~\eta=0.35002117452$ 
+\end{itemize}
+\item $L^2$ like norm of cell average scalar flux
+\be
+E_{\phi_A} = \sqrt{ \sum_{c=1}^{N_{cells}}{ \Delta x_c \Delta y_c (\widetilde{\phi}_A - \phi_{A,exact} )^2} } \pec
+\ee
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Orthogonal Mesh}
+625 square mesh cells
+\centering
+\begin{figure}[!hbp]
+	\centering
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=1.5in]{bild_64} 
+		\caption{UBLD}
+  \end{subfigure}
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=1.5in]{bcsz_64}		
+		\caption{BCSZ}
+	\end{subfigure}
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=1.5in]{cb_64}
+		\caption{SCB/FLBLD}
+	\end{subfigure}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Convergence}
+%
+\begin{figure}[!htp]
+		\centering
+		\includegraphics[width=3.5in]{glance_convergence} 		
+\end{figure}
+%
+\end{frame}
+
+\subsection{Distorted Mesh}
+\begin{frame}
+\frametitle{Distorted Mesh}
+$25\times 25$ cells, with distorted interior vertices
+\centering
+\begin{figure}[!hbp]
+	\centering
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=1.5in]{bild_unstruct} 
+		\caption{UBLD}
+  \end{subfigure}
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=1.5in]{bcsz_unstruct}		
+		\caption{BCSZ}
+	\end{subfigure}
+	\begin{subfigure}{0.32\textwidth}
+		\centering
+		\includegraphics[width=1.5in]{scb_unstruct}
+		\caption{SCB}
+	\end{subfigure}
+\end{figure}
+\end{frame}
+
+\section{Conclusions}
+\subsection{Conclusions and Future Work}
+\begin{frame}
+\frametitle{Conclusions and Future Work}
+Conclusions
+\begin{itemize}
+\item BCSZ is strictly non-negative
+\item BCSZ is more accurate than UBLD or SCB for a glancing void
+\item BCSZ can be applied to non-orthogonal meshes
+\item BCSZ requires significant local computation, but is computationally feasible
+\end{itemize}
+Future Work
+\begin{itemize}
+\item Develop a problem large/complex enough that timing can be performed
+\item Move non-linear iteration out of individual cells to enable preconditioning / DSA
+\item Consider removing case selection statement in favor of apply GK quad to entire cell
+\end{itemize}
+\end{frame}
+
+\placelogotrue
+
+\subsection{Acknowledgments}
+\begin{frame}
+\frametitle{Acknowledgments}
+Thanks for your time!
+\vspace{0.3in}
+Portions of this work were funded by the Department of Energy CSGF program, administered by the Krell Institute, under grant DE-FG02-97ER25308.
+\\
+\vspace{0.3in}
+Additional support was provided by the Department of Energy, National Nuclear Security Administration, under Award Number(s) DE-NA0002376.
+
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

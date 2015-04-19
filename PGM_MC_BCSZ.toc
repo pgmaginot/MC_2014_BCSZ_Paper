@@ -1,10 +1,18 @@
 \beamer@endinputifotherversion {3.33pt}
 \beamer@sectionintoc {1}{Goal}{3}{0}{1}
 \beamer@subsectionintoc {1}{1}{Goal}{3}{0}{1}
-\beamer@sectionintoc {2}{Basics}{4}{0}{2}
-\beamer@subsectionintoc {2}{1}{DFEM Basics}{4}{0}{2}
-\beamer@subsectionintoc {2}{2}{Geometry Mapping}{5}{0}{2}
-\beamer@sectionintoc {3}{BCSZ Method}{7}{0}{3}
-\beamer@subsectionintoc {3}{1}{Definition}{7}{0}{3}
-\beamer@subsectionintoc {3}{2}{Edge Integration}{8}{0}{3}
-\beamer@subsectionintoc {3}{3}{Cell Integration}{9}{0}{3}
+\beamer@sectionintoc {2}{BCSZ Method}{4}{0}{2}
+\beamer@subsectionintoc {2}{1}{Definition}{4}{0}{2}
+\beamer@subsectionintoc {2}{2}{Edge Integration}{5}{0}{2}
+\beamer@subsectionintoc {2}{3}{Cell Integration}{6}{0}{2}
+\beamer@sectionintoc {3}{Computational Finesse}{9}{0}{3}
+\beamer@subsectionintoc {3}{1}{Almost Analytic Integration}{9}{0}{3}
+\beamer@subsectionintoc {3}{2}{Non-linear Iteration}{12}{0}{3}
+\beamer@subsectionintoc {3}{3}{Implementation in PDT}{13}{0}{3}
+\beamer@sectionintoc {4}{Computational Results}{14}{0}{4}
+\beamer@subsectionintoc {4}{1}{Comparators}{14}{0}{4}
+\beamer@subsectionintoc {4}{2}{Structured Mesh}{15}{0}{4}
+\beamer@subsectionintoc {4}{3}{Distorted Mesh}{18}{0}{4}
+\beamer@sectionintoc {5}{Conclusions}{19}{0}{5}
+\beamer@subsectionintoc {5}{1}{Conclusions and Future Work}{19}{0}{5}
+\beamer@subsectionintoc {5}{2}{Acknowledgments}{20}{0}{5}
