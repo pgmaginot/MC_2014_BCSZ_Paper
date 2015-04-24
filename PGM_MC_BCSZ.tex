@@ -108,8 +108,9 @@ M\&C 2015 %\usebeamerfont{section in head/foot}\insertshorttitle
 \frametitle{Outline}
 
 \begin{enumerate}
-\item Goal/Motivation
+\item Motivation
 \item BCSZ Method
+\item BCSZ Numerical Challenges
 \item Initial Results
 \end{enumerate}
 
@@ -117,20 +118,40 @@ M\&C 2015 %\usebeamerfont{section in head/foot}\insertshorttitle
 
 %---------------------------------------------------------------------------------------------
 
-\section{Goal}
-
-\subsection{Goal}
+%\section{Goal}
+%
+%\subsection{Goal}
+%\begin{frame}
+%\frametitle{Goal}
+%\begin{itemize}
+%\item Long term goal: Accurate methods for multi-dimensional radiative transfer
+%\item Near term goal: Non-negative bilinear DFEM for neutron transport
+%\begin{itemize}
+%\item Bilinear DFEM required on quads to maintain thick diffusion limit
+%\item Radiative transfer cells will almost certainly be optically thick
+%\end{itemize}
+%\item History: Extension of non-negative linear $(1,x,y)$ scheme developed on rectangles
+%\end{itemize}
+%\end{frame}
+\section{Motivation}
+\subsection{Motivation}
 \begin{frame}
-\frametitle{Goal}
+\frametitle{Motivation}
+Discontinuous finite element (DFEM) spatial discretizations of
+\be
+\omg_d \cdot \nabla \psi_d(x,y) + \sigma_t(x,y) \psi_d(x,y) = S_d(x,y)
+\ee
+can generate negative, non-physical solutions
+
 \begin{itemize}
-\item Long term goal: Accurate methods for multi-dimensional radiative transfer
-\item Near term goal: Non-negative bilinear DFEM for neutron transport
+\item Desire: More accurate methods for multi-D radiative transfer
 \begin{itemize}
-\item Bilinear DFEM required on quads to maintain thick diffusion limit
-\item Radiative transfer cells will almost certainly be optically thick
+\item Requires bilinear DFEM, if mesh consists of quadrilaterals
 \end{itemize}
-\item History: Extension of non-negative linear $(1,x,y)$ scheme developed on rectangles
+\item Past: Non-linear, non-negative DFEM scheme for linear $(1,x,y)$ on rectangles
+\item Question: Is there a tractable non-negative scheme for BLD?
 \end{itemize}
+%
 \end{frame}
 
 %---------------------------------------------------------------------------------------------
@@ -398,10 +419,11 @@ E_{i} &=& \frac{\abs{ \psi_{i,sym} - \psi_{i,num} }}{\abs{\psi_{i,sym} }} \\
 \begin{frame}
 \frametitle{Non-linear Iteration}
 \begin{itemize}
+\item Solve for local unknowns (1 solve per cell, direction, group, sweep)
 \item Newton iteration with finite difference formed Jacobian
-\item $\BCSZH^{(0)} = \widetilde{\psi}_{UBLD}$
+
 \item Damping with restart based on iteration count
-\item Solve for local unknowns (1 solve per cell, direction, group [if needed])
+\item $\BCSZH^{(0)} = \widetilde{\psi}_{UBLD}$
 \item Search for scaled \BCSZH.  Scale using $\BCSZH^{(0)}$
 \item $\epsilon = \epsilon_{rel} R^{(0)} + \epsilon_{abs} \norm{\text{RHS}}_{L_2}$
 \item $\epsilon_{rel} = 10^{-10}$, $\epsilon_{abs} = 10^{-12}$
@@ -545,7 +567,10 @@ Future Work
 \begin{itemize}
 \item Develop a problem large/complex enough that timing can be performed
 \item Move non-linear iteration out of individual cells to enable preconditioning / DSA
-\item Consider removing case selection statement in favor of apply GK quad to entire cell
+\item Consider removing case selection statement in favor of applying GK quad to entire cell
+\begin{itemize}
+\item Could enable $Q^N$ trial space discretizations
+\end{itemize}
 \end{itemize}
 \end{frame}
 

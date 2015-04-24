@@ -1,6 +1,6 @@
 \beamer@endinputifotherversion {3.33pt}
-\beamer@sectionintoc {1}{Goal}{3}{0}{1}
-\beamer@subsectionintoc {1}{1}{Goal}{3}{0}{1}
+\beamer@sectionintoc {1}{Motivation}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Motivation}{3}{0}{1}
 \beamer@sectionintoc {2}{BCSZ Method}{4}{0}{2}
 \beamer@subsectionintoc {2}{1}{Definition}{4}{0}{2}
 \beamer@subsectionintoc {2}{2}{Edge Integration}{5}{0}{2}
